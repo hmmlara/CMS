@@ -1,0 +1,15 @@
+Options -Indexes
+
+RewriteEngine On 
+RewriteCond %{REQUEST_FILENAME} !-f 
+RewriteCond %{REQUEST_FILENAME} !-d
+# remove extension
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,NE,L]
+
+RewriteRule /PMS/_404.php [R=301,L]
+RewriteRule /PMS/_403.php [R=301,L]
+
+ErrorDocument 403 /PMS/_403.php
+ErrorDocument 404 /PMS/_404.php

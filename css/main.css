@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
+
+* {
+  font-family: 'Secular One', sans-serif;
+}
+body{
+  background: #f1f1f1;
+}
+.navbar {
+  padding: 0;
+  height: 50px;
+}
+.navbar .navbar-brand{
+  margin-left: 2%;
+  margin-right: 3%;
+}
+/* change the link color and padding  */
+.navbar-nav .nav-link {
+  color: #3e363f;
+  padding: 0.75rem 1rem;
+}
+
+/* change the color and bg color of active or hovered links */
+.nav-item.active .nav-link {
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* change border color of input */
+.form-control:focus{
+  border: 1px solid #111;
+}
