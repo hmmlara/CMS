@@ -58,7 +58,7 @@ for ($i = 1; $i <= count($patients); $i++) {
             foreach($patients as $patient){
         ?>
 
-        <div class="<?php  echo $_COOKIE["class"]; ?>" id="cms_card">
+        <div class="<?php  echo (isset($_COOKIE["class"]))? $_COOKIE["class"] : 'col-3 mb-4'; ?>" id="cms_card">
             <a href="patient_info.php?id=<?php echo $patient["id"]; ?>" class="text-dark">
                 <div class="card shadow-3">
                     <div class="card-body">
