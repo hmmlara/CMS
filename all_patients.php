@@ -63,7 +63,7 @@ if(isset($_POST["search"])){
                                 </div>
                                 <div class="col-9 px-3">
                                     <small><?php echo $patient["pr_code"]; ?></small>
-                                    <h6><?php echo $patient["name"]; ?></h6>
+                                    <h6 class="text-truncate"><?php echo $patient["name"]; ?></h6>
                                 </div>
                             </div>
                         </div>
