@@ -27,24 +27,23 @@ if (isset($_GET["id"])) {
                     <h3 class="mt-2"><?php echo $patient_infos["name"]; ?></h3>
                 </div>
                 <div class="card-body">
-                    <div class="row">
+                    <div class="row w-100">
                         <div class="col-6">
-                            <h5>Code:&nbsp;<span><?php echo $patient_infos["pr_code"]; ?></span></h5>
-                            <h5>Phone:&nbsp;<span><?php echo $patient_infos["phone"]; ?></span></h5>
-                            <h5>Age:&nbsp;<span><?php echo $patient_infos["age"]; ?></span></h5>
-                            <h5>Weight:&nbsp;<span><?php echo $patient_infos["weight"]; ?></span></h5>
+                            <h6>Code:&nbsp;<span><?php echo $patient_infos["pr_code"]; ?></span></h6>
+                            <h6>Phone:&nbsp;<span><?php echo $patient_infos["phone"]; ?></span></h6>
+                            <h6>Age:&nbsp;<span><?php echo $patient_infos["age"]; ?></span></h6>
+                            <h6>Weight:&nbsp;<span><?php echo $patient_infos["weight"]; ?></span></h6>
                         </div>
 
                         <div class="col-6">
-                            <h5>Height:&nbsp;<span><?php echo $patient_infos["height"]; ?></span></h5>
-                            <h5>Gender:&nbsp;<span><?php echo $gender[$patient_infos["gender"]]; ?></span></h5>
-                            <h5>Blood Type:&nbsp;<span><?php echo $patient_infos["blood_type"]; ?></span></h5>
+                            <h6>Height:&nbsp;<span><?php echo $patient_infos["height"]; ?></span></h6>
+                            <h6>Gender:&nbsp;<span><?php echo $gender[$patient_infos["gender"]]; ?></span></h6>
+                            <h6>Blood Type:&nbsp;<span><?php echo $patient_infos["blood_type"]; ?></span></h6>
                         </div>
 
-                        <button class="btn btn-sm btn-primary">Edit</button>
+                        
                     </div>
-
-
+                    <button class="btn btn-sm btn-primary mx-auto">Edit</button>
                 </div>
             </div>
         </div>
