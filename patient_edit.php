@@ -41,16 +41,16 @@ if (isset($_POST["add"])) {
         $result = $patientController->update($data);
 
         if ($result) {
-            echo "<script>window.location.href='all_patient.php'</script>";
+            echo "<script>window.location.href='all_patients'</script>";
         }
     }
 }
 
 ?>
 
-<div class="container">
-    <h3>Edit Patient</h3>
-    <a href="all_patient.php" class="btn btn-primary mb-3">Back</a>
+<div class="container mt-3">
+    <h5>Edit Patient</h5>
+    <a href="<?php echo $_SERVER["HTTP_REFERER"];?>" class="btn btn-dark btn-sm mb-3"><i class="fas fa-arrow-left"></i></a>
 
     <div class="card">
         <div class="card-body">
@@ -58,12 +58,12 @@ if (isset($_POST["add"])) {
                 <input type="text" name="id" id="" value="<?php echo $_GET["id"]; ?>" hidden>
                 <div class="row">
                     <div class="col-6">
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="" class="form-label">Patient's Code</label>
                             <input type="text" name="pr_code" id="" class="form-control" value="<?php echo $patient["pr_code"]; ?>" readonly>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="" class="form-label">Name</label>
                             <?php
                             if (!isset($data["name"])) {
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
                             ?>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="" class="form-label">Phone</label>
                             <?php
                             if (!isset($data["phone"])) {
@@ -119,7 +119,7 @@ if (isset($_POST["add"])) {
                     </div>
 
                     <div class="col-6">
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="" class="form-label">Weight(kg)</label>
                             <?php
                             if (!isset($data["weight"])) {
@@ -137,7 +137,7 @@ if (isset($_POST["add"])) {
                             ?>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="" class="form-label">Height(ft,in)</label>
                             <?php
                             if (!isset($data["height"])) {
@@ -155,7 +155,7 @@ if (isset($_POST["add"])) {
                             ?>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="" class="form-label">Gender</label>
                             <select name="gender" class="form-control <?php echo (isset($error_msg["gender"])) ? 'border border-danger' : ''; ?>">
                                 <option value="0" hidden selected>Choose Gender</option>
@@ -169,7 +169,7 @@ if (isset($_POST["add"])) {
                             ?>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="" class="form-label">Blood Type</label>
                             <select name="blood_type" class="form-control <?php echo (isset($error_msg["blood_type"])) ? 'border border-danger' : ''; ?>">
                                 <option value="0" hidden selected>Choose Blood Type</option>
@@ -190,7 +190,7 @@ if (isset($_POST["add"])) {
                         <input type="date" name="created_at" id="" value="<?php echo $patient["created_at"]; ?>" hidden>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success w-100" name="add">Add Patient</button>
+                <button type="submit" class="btn btn-dark w-100" name="add">Add Patient</button>
             </form>
         </div>
     </div>

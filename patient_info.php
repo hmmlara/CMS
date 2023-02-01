@@ -18,7 +18,7 @@ if (isset($_GET["id"])) {
 
 <div class="container-fluid mt-3">
     <h5>Patient Information</h5>
-    <a href="all_patients" class="btn btn-sm btn-primary">Back</a>
+    <a href="all_patients" class="btn btn-sm btn-dark"><i class="fas fa-arrow-left"></i></a>
     <div class="row mt-3">
         <div class="col-4">
             <div class="card py-2">
@@ -40,10 +40,11 @@ if (isset($_GET["id"])) {
                             <h6>Gender:&nbsp;<span><?php echo $gender[$patient_infos["gender"]]; ?></span></h6>
                             <h6>Blood Type:&nbsp;<span><?php echo $patient_infos["blood_type"]; ?></span></h6>
                         </div>
-
                         
+                        <div class="col-12 d-flex justify-content-center mt-3">
+                            <a href="patient_edit?id=<?php echo $_GET["id"];?>" class="btn btn-sm btn-dark">Edit</a>
+                        </div>
                     </div>
-                    <button class="btn btn-sm btn-primary mx-auto">Edit</button>
                 </div>
             </div>
         </div>
