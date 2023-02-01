@@ -41,7 +41,7 @@ if (isset($_POST["add"])) {
         $result = $patientController->update($data);
 
         if ($result) {
-            echo "<script>window.location.href='all_patient.php'</script>";
+            echo "<script>window.location.href='all_patients'</script>";
         }
     }
 }
