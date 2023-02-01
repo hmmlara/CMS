@@ -37,21 +37,7 @@ if(isset($_POST["search"])){
             </form>
 
             <div class="row">
-                <div class="col-4">
-                    <div class="dropdown float-end">
-                        <button class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenu2"
-                            data-mdb-toggle="dropdown" aria-expanded="false">
-                            filter
-                            <i class="fas fa-filter"></i>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                            <li><button class="dropdown-item" type="button">Action</button></li>
-                            <li><button class="dropdown-item" type="button">Another action</button></li>
-                            <li><button class="dropdown-item" type="button">Something else here</button></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-8 d-flex justify-content-center">
+                <div class="col-12 d-flex justify-content-center">
                     <button class="btn btn-light btn-sm mx-2" id="grid1"><i class="fas fa-th fs-6"></i></button>
                     <button class="btn btn-light btn-sm" id="grid2"><i class="fas fa-list fs-6"></i></button>
                 </div>
@@ -60,7 +46,7 @@ if(isset($_POST["search"])){
 
         <hr class="hr-blurry">
 
-        <div class="row w-100 overflow-auto">
+        <div class="row w-100 overflow-auto" style="max-height: 400px;">
             <?php 
             foreach($patients as $patient){
         ?>
@@ -77,7 +63,7 @@ if(isset($_POST["search"])){
                                 </div>
                                 <div class="col-9 px-3">
                                     <small><?php echo $patient["pr_code"]; ?></small>
-                                    <h5><?php echo $patient["name"]; ?></h5>
+                                    <h6><?php echo $patient["name"]; ?></h6>
                                 </div>
                             </div>
                         </div>
