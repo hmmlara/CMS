@@ -6,54 +6,128 @@ require_once "layouts/header.php";
 require_once "controllers/MediTypeController.php";
 require_once "./core/Request.php";
 require_once "./core/Validator.php";
+require_once "./core/libraray.php";
+
 
 $meditypeController= new MediTypeController();
 $meditype = $meditypeController->getMedicineType();
 
-foreach(range(1,count($meditype))as $index)
+if(count($meditype) > 0){
+    foreach(range(1,count($meditype))as $index)
 {
     $meditype[$index-1]+=["display_id"=>$index];
 }
+}
 
+$addMediType = new MediTypeController();
+
+$error_msg=[];
+if(isset($_POST["add"]))
+{
+    //request for form data
+    $request = new Request();
+    $data = $request->getAll();
+    unset($data["add"]);    
+    $validator = new Validator($data);
+
+    //for error message
+
+    if(!$validator->validated())
+    {
+        $error_msg = $validator->getErrorMessages();
+    }
+    else
+    {
+        //clear error messages if validated is true
+        $error_msg = [];
+
+        $result = $addMediType->addMediType($data);
+
+        if($result)
+        {
+            header("location:medi_type.php");
+        }
+    }
+}
+
+if(isset($_POST["search"])){
+    $meditype = search_data($meditype,$_POST["search_val"]);
+}
 
 ?>
-<div class="container d-flex justify-content-between">
-    <h2><b>Medicine_Type</b></h2>
-    <a href="addMediType.php" class="btn btn-primary">Add new MedicineType</a>
-</div>
-        
-<div class="col-6">
-    <div class="col-12">
-        <table class="table text-center">
-    <thead class="thead-dark">
-        <tr>
-            <th scope="col">Id</th>
-            <th scope="col">Type</th>
-            <th scope="col">Functions</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        foreach($meditype as $medi_type)
-        {
-            echo "<tr>";
-            echo "<td>".$medi_type["display_id"]."</td>";
-            echo "<td>".$medi_type["type"]."</td>";            
-            echo "<td class='pe-3'>";
-            echo "<a href='' class='btn btn-primary ml-2'><i class='fas fa-info-circle'></i></a>";
-            echo "<a href='editMeditype.php?id=".$medi_type["id"]."' class='btn btn-warning ml-2'><i class='fas fa-edit'></i></a>";
-            echo "<a href='' class='btn btn-danger ml-2'><i class='fa fa-trash'></i></a>";
-            echo "</td>";
-            echo "</tr>";
-        }
-        ?>
-    </tbody>
 
-</table>
+<div class="container mt-5">
+    <div clss="row">
+        <div class="row">
+            <div class="col-8">
+                <h5 class="mb-4">Medicine Type</h5>
+            </div>
+            <div class="col-4 mb-3">
+                <form action="" method="post">
+                    <div class="form-group d-flex float-right mb-3">
+                        <span class="mt-2">Search:&nbsp;</span>
+                        <input type="text" name="search_val" id="" class="form-control w-50 mx-3"
+                            placeholder="Enter Type_name">
+                        <button type="submit" name="search" class="btn btn-sm btn-dark">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row">
+                <div class="col-11 d-flex justify-content-between  mb-3">
+                    <form action="" method="post">
+                        <div class="form-group d-flex">
+                            <input type="text" placeholder="Add medicine type" name="type" id=""
+                                class="<?php echo(isset($error_msg["type"]))? 'form-control border border-danger':'form-control';?>"
+                                value="<?php echo(!empty($data['type'])) ? $data["type"] : '';?>">
+                            <button type="submit" name="add" class="btn w-50 mx-3 btn-sm btn-dark">Add</button>
+                        </div>
+                        <div>
+                            <?php
+                           if(isset($error_msg["type"]))
+                           {
+                               echo "<small class='text-danger'>".$error_msg["type"]."</small>";
+                           }
+                           ?>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-1 me">
+                    <a href="medicine.php" class="text-dark text-decoration-underline">Back</a>
+                </div>
+            </div>
+
+            <hr class="hr-blurry">
+        </div>
+
+        <div class="col-12 d-flex">
+
+            <table class="table text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Type</th>
+                        <th>Functions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+            foreach($meditype as $medi_type)
+            {
+                echo "<tr>";
+                echo "<td>".$medi_type["display_id"]."</td>";
+                echo "<td>".$medi_type["type"]."</td>";            
+                echo "<td class='pe-3'>";
+                echo "<a href='' class='btn btn-black ml-2'><i class='fa fa-trash'></i></a>";
+                echo "</td>";
+                echo "</tr>";
+            }
+            ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-
-<?php
+    <?php
 require_once './layouts/footer.php';
 ?>

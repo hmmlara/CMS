@@ -16,6 +16,7 @@ class Medicine{
 
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
+
     public function getAllMedicine()
     {
         $this->pdo=Database::connect();
@@ -67,6 +68,7 @@ class Medicine{
 
         return false;
     }
+    
     public function addMediStock($data)
     {
         $this->pdo=Database::connect();
@@ -92,12 +94,41 @@ class Medicine{
 
             // id , qty from medi_stocks
             $result = $this->getMediStock();
-            
+
             // update medi_warehouses total qty where medicine_id == ??
             return $this->updateMediWarehouseStock($result);
         }
 
         return false;
+    }
+
+    public function getWarehouseStock(){
+        
+        $this->pdo = Database::connect();
+
+        $sql = "select *,medicines.name from medi_warehouses join medicines on medi_warehouses.medicine_id = medicines.id";
+
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getMediStkHis($medicine_id){
+
+        $this->pdo = Database::connect();
+
+        $sql = "select *,medicines.name from medi_stocks
+            join medicines on medicines.id = medi_stocks.medicine_id where medicine_id = :medicine_id";
+
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->bindParam(":medicine_id",$medicine_id);
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+
     }
 
     // create warehouse stock
@@ -140,6 +171,7 @@ class Medicine{
         return false;
 
     }
+
     // get total_qty from medi_warehouses where medicine_id = ?? 
     private function getWarehouseQty($medicine_id){
 
@@ -157,6 +189,7 @@ class Medicine{
 
         return $result["total_qty"];
     }
+
      // update medi warehouse
      private function updateMediWarehouseStock($data){
 
