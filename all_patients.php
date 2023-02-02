@@ -4,21 +4,31 @@ include_once "./layouts/header.php";
 
 require_once "./controllers/PatientController.php";
 require_once "./core/libraray.php";
+require_once "./core/Paginator.php";
 
 $patientController = new PatientController();
 
 $patients = $patientController->getPatients();
+
+// reverse array
+$patients = array_reverse($patients);
 
 // add id for show
 for ($i = 1; $i <= count($patients); $i++) {
     $patients[$i - 1] += ["display_id" => $i];
 }
 
-if(isset($_POST["search"])){
-    if(!empty($_POST["search_val"])){
-        $patients = search_data($patients,$_POST["search_val"]);
+if (isset($_POST["search"])) {
+    if (!empty($_POST["search_val"])) {
+        $patients = search_data($patients, $_POST["search_val"]);
     }
 }
+// add pagination
+$pages = (isset($_GET["pages"])) ? (int) $_GET["pages"] : 1;
+
+$per_page = 4;
+$num_of_pages = ceil(count($patients) / $per_page);
+$pagi_patients = Pagination::paginator($pages, $patients, $per_page);
 
 ?>
 
@@ -33,7 +43,8 @@ if(isset($_POST["search"])){
             <form action="" method="post">
                 <div class="form-group d-flex float-right mb-3">
                     <span class="mt-2">Search:&nbsp;</span>
-                    <input type="text" name="search_val" id="" class="form-control w-50 mx-3" placeholder="Enter Patient Code">
+                    <input type="text" name="search_val" id="" class="form-control w-50 mx-3"
+                        placeholder="Enter Patient Code">
                     <button type="submit" name="search" class="btn btn-sm btn-dark">Search</button>
                 </div>
             </form>
@@ -45,39 +56,103 @@ if(isset($_POST["search"])){
                 </div>
             </div>
         </div>
+    </div>
 
-        <hr class="hr-blurry">
+    <hr class="hr-blurry">
 
-        <div class="row w-100 overflow-auto" style="max-height: 400px;">
-            <?php 
-            foreach($patients as $patient){
-        ?>
-
-            <div class="<?php  echo (isset($_COOKIE["class"]))? $_COOKIE["class"] : 'col-3 mb-4'; ?>" id="cms_card">
-                <a href="patient_info.php?id=<?php echo $patient["id"]; ?>" class="text-dark">
-                    <div class="card shadow-3">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-3">
-                                    <div class="fs-6 text-center">
-                                        <i class="fas fa-user bg-dark p-3 rounded-circle text-white"></i>
-                                    </div>
-                                </div>
-                                <div class="col-9 px-3">
-                                    <small><?php echo $patient["pr_code"]; ?></small>
-                                    <h6 class="text-truncate"><?php echo $patient["name"]; ?></h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
+    <table class="table table-light table-collapse">
+        <thead>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Function</th>
+        </thead>
+        <tbody>
+            <?php
+                foreach ($pagi_patients as $patient) {
+            ?>
+            <tr>
+                <td><?php echo $patient["display_id"]; ?></td>
+                <td><?php echo $patient["name"]; ?></td>
+                <td><?php echo $patient["phone"]; ?></td>
+                <td>
+                    <a href="patient_info?id=<?php echo $patient["id"]; ?>" class="btn btn-sm btn-info"><i
+                            class="fas fa-pen"></i></a>
+                    <a href="" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
 
             <?php
-            }
-        ?>
-        </div>
-    </div>
+                }
+            ?>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example mx-auto">
+        <ul class="pagination justify-content-center">
+            <li class="page-item <?php echo ($pages == 1) ? 'disabled' : ''; ?>">
+                <a class="page-link"
+                    href="<?php echo ($pages == 2) ? 'all_patients' : $server_page . '?pages=' . ($pages - 1); ?>"
+                    aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+            </li>
+            <?php
+                // pagi page
+                $server_page = $_SERVER["PHP_SELF"];
+                $ellipse = false;
+                $ends = 1;
+                $middle = 2;
+                
+                for ($page = 1; $page <= $num_of_pages; $page++) {
+            ?>      
+                    <?php
+                        if($page == $pages){
+                            $ellipse = true;
+                    ?>
+                            <li class='page-item active'>
+                                <a class='page-link'
+                                    href='<?php echo ($page - 1 < 1) ? 'all_patients' : $server_page . "?pages=" . $page; ?>'>
+                                    <?php echo $page; ?>
+                                </a>
+                            </li>
+                    <?php
+                        }
+                        else{
+                            // condition for ... in pagination
+                            if ($page <= $ends || ($pages && $page >= $pages - $middle && $page <= $pages + $middle) || $page > $num_of_pages - $ends) { 
+                    ?>
+                                <li class='page-item'>
+                                    <a class='page-link'
+                                        href='<?php echo ($page - 1 < 1) ? 'all_patients' : $server_page . "?pages=" . $page; ?>'>
+                                        <?php echo $page; ?>
+                                    </a>
+                                </li>
+                    <?php
+                                $ellipse = true;
+                            }
+                            elseif($ellipse){
+                    ?>
+                                <li class='page-item'>
+                                    <a class='page-link'>&hellip;</a>
+                                </li>
+                    <?php
+                                $ellipse = false;
+                            }
+                        }
+                    ?>
+            <?php
+                }
+            ?>
+            <li class="page-item <?php echo ($pages == $num_of_pages) ? 'disabled' : ''; ?>">
+                <a class="page-link" href="<?php echo $server_page; ?>?pages=<?php echo $pages + 1; ?>"
+                    aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>
 
 
