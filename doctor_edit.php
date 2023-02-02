@@ -9,6 +9,14 @@ require_once "core/libraray.php";
 
 $doctorController=new DoctorController();
 
+if(isset($_GET["id"])){
+    $doctors=$doctorController->getDoctorDetail($_GET["id"]);
+    // $user=$doctorController->add($_GET["id"]);
+    // var_dump($doctors);
+}
+
+
+
 $dataCode = $doctorController->getCode();
 
 if (!empty($dataCode)) {
@@ -23,13 +31,6 @@ else{
 
 $error_msg = [];
 
-// if(isset($_POST["submit"])){
-        
-   
-    
-
-// }
-
 if (isset($_POST["add"])) {
 
      // request for form data
@@ -43,7 +44,9 @@ if (isset($_POST["add"])) {
     $filesize=$_FILES['img']['size'];
     $tempfile=$_FILES['img']['tmp_name'];
     if($_FILES['img']['error']!=0){
-        echo "File is empty";
+        //echo "File is empty";
+
+        $data["img"] = $doctors["img"];
     }else{
 
         $fileInfo=explode('.',$filename);
@@ -65,8 +68,6 @@ if (isset($_POST["add"])) {
     }
     
    
-   
-
     // get rid add array val
     unset($data["add"]);
 
@@ -79,25 +80,7 @@ if (isset($_POST["add"])) {
         // clear error messages if validated is true
         $error_msg = [];
 
-        // $file = $request->file('img');
-
-        // echo $file->getOriginalName();
-        // $file->allowedExt(["jpg","jpeg"]);
-
-        // $file_name = uniqid().$file->getOriginalName();
-
-        // if($file->move(public_path()."/uploads/",$file_name)){
-        //     echo "success";
-        // }
-
-        // else{
-        //     echo $file->getErrorMessage();
-        // }
-        // echo "<pre>";
-        // var_dump($data);
-        // echo "</pre>";
-
-        $result = $doctorController->add($data);
+        $result = $doctorController->update($data);
         if ($result) {
             header("location:all_doctors.php");
         }
@@ -106,47 +89,12 @@ if (isset($_POST["add"])) {
 
 ?>
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-4">
-        <h4>Add New Doctor</h4>
-        <a href="all_doctors.php" class="btn  btn-primary mb-3">Back</a>
-        </div>
-    </div>
-    
+<div class="container">
+    <h5>Doctor Edit</h5>
+    <a href="all_doctors.php" class="btn btn-primary">Back</a>
+
     <form action="" method="post" enctype="multipart/form-data">
-        <input type="text" name="role_id" id="" value="2" hidden>
-        <div class="card mb-3">
-            <div class="card-title p-3">
-                <h3>Account</h3>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label for="" class="form-label">Account Name</label>
-                            <input type="text" name="acc_name" id=""  class="<?php echo (isset($error_msg["acc_name"])) ? 'form-control  border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["acc_name"])) ? $data["acc_name"] : ''; ?>">
-                            <?php
-                            if(isset($error_msg["acc_name"])){
-                                echo "<small class='text-danger'>".$error_msg["acc_name"]."</small>";
-                            }
-                            ?>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label for="" class="form-label">Account Password</label>
-                            <input type="text" name="password" id=""  class="<?php echo (isset($error_msg["password"])) ? 'form-control  border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["password"])) ? $data["password"] : ''; ?>">
-                            <?php
-                            if(isset($error_msg["password"])){
-                                echo "<small class='text-danger'>".$error_msg["password"]."</small>";
-                            }
-                            ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <input type="text" name="user_id" value="<?php echo $_GET["id"]; ?>" hidden>
         <div class="card mb-3">
             <div class="card-title p-3">
                 <h3>Doctor Information</h3>
@@ -154,36 +102,62 @@ if (isset($_POST["add"])) {
             <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="form-group mb-3">
+                            <div class="form-group">
                                 <label for="" class="form-label">Doctor's Code</label>
-                                <input type="text" name="dr_code" class="form-control" id=" " value="<?php echo 'dr-'.$newCode;   ?>" readonly>
+                                <input type="text" name="dr_code" class="form-control" id=" " value="<?php echo $doctors["user_code"];   ?>" readonly>
                             </div>
 
-                            <div class="form-group mb-3">
+                            <div class="form-group">
                                 <label for="" class="form-label">Name</label>
-                                <input type="text" name="dname"  id=" "  class="<?php echo (isset($error_msg["dname"])) ? 'form-control  border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["dname"])) ? $data["dname"] : ''; ?>">
-                            </div>
-                            <?php
-                            if(isset($error_msg["dname"])){
-                                echo "<small class='text-danger'>".$error_msg["dname"]."</small>";
-                            }
-                            ?>
-
-                            <div class="form-group mb-3">
-                                Select Image file to upload
-                                <input type="file" name="img" id=" " class="<?php echo (isset($error_msg['img']))? "form-control border broder-danger" : "form-control";  ?>"  value="<?php echo (!empty($data["img"]))? $data["img"] :' ';  ?>">
-                                <!-- <input type="submit" name="submit" value="upload"> -->
-                            <?php
-                            if(isset($error_msg["img"])){
-                                echo "<small class='text-danger'>".$error_msg["img"]."</small>";
-                            }
-                            ?>
-                            </div>
-
-                            <div class="form-group mb-3">
-                               <label for="" class="form-label">Age</label>
-                               <input type="text" name="age" id=" " class="<?php echo (isset($error_msg["age"])) ? 'form-control border border-danger' : 'form-control' ; ?>" value="<?php echo (!empty($data['age'])) ?$data["age"] :'' ;?>" >
                                 <?php
+                                    if(!isset($data["dname"])){
+                                ?>
+                                    <input type="text" name="dname"  id=" "  class="form-control" value="<?php echo $doctors["name"]; ?>">
+                                <?php
+                                    }else{
+                                ?>
+                                     <input type="text" name="dname"  id=" "  class="<?php echo (isset($error_msg['dname']))? "form-control border broder-danger" : "form-control";  ?>" value="<?php echo (!empty($data["dname"]))? $data["dname"] :' ';  ?>">
+                                     <?php
+                                    }
+                                        if(isset($error_msg["dname"])){
+                                            echo "<small class='text-danger'>".$error_msg["dname"]."</small>";
+                                        }
+                            ?>
+                            </div>
+                           
+
+                            <div class="form-group">
+                                Select Image file to upload
+                                <?php
+                                    if(!isset($data["img"])){
+                                ?>
+                                <input type="file" name="img" id="" class="form-control" value=" <?php echo $doctors['img'];  ?>">
+                                
+                                <?php
+                                    }else{
+                                ?>       
+                                <input type="file" name="img" id=" " class="<?php echo (isset($error_msg['img']))? "form-control border broder-danger" : "form-control";  ?>"  value="<?php echo (!empty($data["img"]))? $data["img"] :' ';  ?>">
+                                
+                                <?php
+                                    }
+                                if(isset($error_msg["img"])){
+                                    echo "<small class='text-danger'>".$error_msg["img"]."</small>";
+                                }
+                                ?>
+                            </div>
+
+                            <div class="form-group">
+                               <label for="" class="form-label">Age</label>
+                               <?php
+                                    if(!isset($data["age"])){
+                               ?>
+                               <input type="text" name="age" class="form-control" value="<?php echo $doctors["age"];  ?>">
+                               <?php
+                                    }else{
+                               ?>
+                                <input type="text" name="age" id=" " class="<?php echo (isset($error_msg["age"])) ? 'form-control border border-danger' : 'form-control' ; ?>" value="<?php echo (!empty($data['age'])) ?$data["age"] :'' ;?>" >
+                                <?php
+                                }
                                     if(isset($error_msg["age"])){
                                         echo "<small class='text-danger'>". $error_msg["age"] ."</small>";
                                     }
@@ -192,23 +166,31 @@ if (isset($_POST["add"])) {
                         </div>
 
                         <div class="col-md-6">
-                            <div class="form-group mb-3">
+                            <div class="form-group">
                                     <label for="" class="form-label">Education</label>
+                                    <?php
+                                        if(!isset($data["education"])){
+                                    ?>
+                                    <input type="text" name="education" class="form-control" value="<?php echo $doctors["education"]; ?>">
+                                    <?php
+                                        }else{
+                                    ?>
                                     <input type="text" name="education"  id=" "  class="<?php echo (isset($error_msg["education"])) ? 'form-control  border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["education"])) ? $data["education"] : ''; ?>">
                             
                                 <?php
+                                        }
                                 if(isset($error_msg["education"])){
                                     echo "<small class='text-danger'>".$error_msg["education"]."</small>";
                                 }
                                 ?>
                             </div>
                             
-                            <div class="form-group mb-3">
+                            <div class="form-group">
                                 <label for="" class="form-label">Gender</label>
                                 <select name="gender" class="form-control <?php echo (isset($error_msg["gender"])) ? 'border border-danger' : ''; ?>">
                                     <option value="0" hidden selected>Choose Gender</option>
-                                    <option value="1" <?php echo (isset($data["gender"]) && $data["gender"] == '1') ? 'selected' : ''; ?>>Female</option>
-                                    <option value="2" <?php echo (isset($data["gender"]) && $data["gender"] == '2') ? 'selected' : ''; ?>>Male</option>
+                                    <option value="1" <?php echo ($doctors["gender"] == '1') ? 'selected' : ''; ?>>Female</option>
+                                    <option value="2" <?php echo ($doctors["gender"] == '2') ? 'selected' : ''; ?>>Male</option>
                                 </select>
                                 <?php
                                 if (isset($error_msg["gender"])) {
@@ -217,10 +199,19 @@ if (isset($_POST["add"])) {
                                 ?>
                             </div>
 
-                            <div class="form-group mb-3">
+                            <div class="form-group">
                                 <label for="" class="form-label">Martial Status</label>
+                                <?php
+                                    if(!isset($data["status"])){
+                                        
+                                ?>
+                                <input type="text" name="status" class="form-control" value="<?php echo $doctors['martial_status'];  ?>">
+                                <?php
+                                    }else{
+                                ?>
                                 <input type="text" name="status"  id=" "  class="<?php echo (isset($error_msg["status"])) ? 'form-control  border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["status"])) ? $data["status"] : ''; ?>">
                                 <?php
+                                    }
                                 if(isset($error_msg["status"])){
                                     echo "<small class='text-danger'>".$error_msg["status"]."</small>";
                                 }
@@ -229,8 +220,16 @@ if (isset($_POST["add"])) {
 
                             <div class="form-group">
                                 <label for="" class="form-label">NRC</label>
+                                <?php
+                                 if(!isset($data['nrc'])){
+                                ?>
+                                <input type="text" name="nrc" class="form-control" value="<?php echo $doctors['nrc'] ; ?> ">
+                                <?php
+                                 }else{
+                                ?>
                                 <input type="text" name="nrc"  id=" "  class="<?php echo (isset($error_msg["nrc"])) ? 'form-control  border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["nrc"])) ? $data["nrc"] : ''; ?>">
                                 <?php
+                                 }
                                 if(isset($error_msg["nrc"])){
                                     echo "<small class='text-danger'>".$error_msg["nrc"]."</small>";
                                 }
@@ -241,7 +240,7 @@ if (isset($_POST["add"])) {
                     
             </div>
         </div>
-        <button type="submit" class="btn btn-success w-100" name="add">Add Doctor</button>
+        <button type="submit" class="btn btn-success w-100" name="add">Update Doctor</button>
     </form>
 </div>
 

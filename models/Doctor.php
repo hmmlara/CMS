@@ -11,7 +11,7 @@ class Doctor{
         FROM users
         JOIN user_infos ON users.id = user_infos.user_id
         JOIN roles ON roles.id = users.role_id
-        WHERE roles.id = 2";
+        WHERE users.role_id = 2";
         
         $statement=$this->pdo->prepare($sql);
         $statement->execute();
@@ -98,7 +98,7 @@ class Doctor{
 
         $this->pdo = Database::connect();
 
-        $query = "select id from users";
+        $query = "select id from users where role_id = 2";
 
         $statement = $this->pdo->prepare($query);
 
@@ -112,7 +112,7 @@ class Doctor{
     public function getDoctorDetail($id){
         $this->pdo = Database::connect();
 
-        $query = "select * from user_infos where user_id = :id";
+        $query = "select * from user_infos join users where user_infos.user_id= :id and users.id= :id";
 
         $statement = $this->pdo->prepare($query);
 
@@ -126,6 +126,117 @@ class Doctor{
         catch(PDOException $e){
             return false;
         }
+    }
+
+    //update Doctor
+    protected function updateDoctor($data){
+
+        $this->pdo = Database::connect();
+
+         // change updated_at data from $data
+         $data["updated_at"] = date('Y-m-d');
+
+        $sql1 = "select img from user_infos where user_id = :user_id";
+
+        $state = $this->pdo->prepare($sql1);
+        $state->bindParam(":user_id",$data["user_id"]);
+
+        $state->execute();
+        $img = $state->fetch(PDO::FETCH_ASSOC)["img"];
+
+        $query = "UPDATE user_infos SET user_code= :user_code,name=:name,age=:age,nrc=:nrc,education=:education,martial_status=:martial_status, gender=:gender, img=:img, updated_at = :updated_at 
+                     WHERE user_id = :user_id" ;
+ 
+         $statement = $this->pdo->prepare($query);
+ 
+         $statement->bindParam(":user_id",$data["user_id"]);
+         $statement->bindParam(":name",$data["dname"]);
+         $statement->bindParam(":user_code",$data["dr_code"]);
+         $statement->bindParam(":age",$data["age"]);
+         $statement->bindParam(":education",$data["education"]);
+         $statement->bindParam(":martial_status",$data["status"]);
+         $statement->bindParam(":img",$data["img"]);
+         $statement->bindParam(":nrc",$data["nrc"]);
+         $statement->bindParam(":gender",$data["gender"]);
+         $statement->bindParam(":updated_at",$data["updated_at"]);
+        
+        if($statement->execute()){
+
+            if($img != $data["img"] || empty($img)){
+                if(file_exists('uploads/'.$img)){
+                    unlink("uploads/".$img);
+                }
+            }
+
+            return true;
+        }
+         return false;
+
+    }
+
+    //Delete Doctor
+    protected function deleteDoc($id){
+        $this->pdo=Database::connect();
+
+        $sql="Delete from users where id=$id";
+
+        // get id from users table
+        $user_id = $this->getIdById($id);
+
+        $statement=$this->pdo->prepare($sql);
+
+        if($statement->execute()){
+            $img = $this->getImageById($id);
+
+            $del_sql = "Delete from user_infos where user_id = :user_id";
+
+            $stat = $this->pdo->prepare($del_sql);
+
+            $stat->bindParam(":user_id",$user_id);
+
+            if($stat->execute()){
+
+                if(file_exists("uploads/".$img)){
+                    unlink("uploads/".$img);
+                    
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private function getIdById($id){
+
+        $this->pdo = Database::connect();
+
+        $sql = "select id from users where id = :id";
+
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->bindParam(":id",$id);
+
+        $statement->execute();
+
+        $result = $statement->fetch(PDO::FETCH_ASSOC)["id"];
+
+        var_dump($result);
+        return $result;
+    }
+
+    private function getImageById($id){
+
+        $this->pdo = Database::connect();
+
+        $sql = "select img from user_infos where user_id = :user_id";
+
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->bindParam(":user_id",$id);
+
+        $statement->execute();
+
+        return $statement->fetch(PDO::FETCH_ASSOC)["img"];
     }
 }
 ?>

@@ -24,6 +24,22 @@ class DoctorController extends Doctor{
     public function getDetail($id){
         return $this->getDoctorDetail($id);
     }
+
+    //update DoctorInfo
+    public function update($data){
+        return $this->updateDoctor($data);
+    }
+
+    //delete Doctor
+    public function deleteDoctor($id){
+        try{
+            $result=$this->deleteDoc($id);
+            return $result;
+        }
+        catch(PDOException $e){
+            return false;
+        }
+    }
 }
 
 ?>
