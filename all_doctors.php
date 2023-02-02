@@ -7,7 +7,9 @@ $doctorController=new DoctorController();
 $doctors=$doctorController->getDoctors();
 
 if(isset($_POST["search"])){
-    $doctors = search_data($doctors,$_POST["search_val"]);
+    if(!empty($_POST["search_val"])){
+        $doctors = search_data($doctors,$_POST["search_val"]);
+    }
 }
 
 ?>

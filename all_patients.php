@@ -15,7 +15,9 @@ for ($i = 1; $i <= count($patients); $i++) {
 }
 
 if(isset($_POST["search"])){
-    $patients = search_data($patients,$_POST["search_val"]);
+    if(!empty($_POST["search_val"])){
+        $patients = search_data($patients,$_POST["search_val"]);
+    }
 }
 
 ?>
