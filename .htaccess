@@ -1,4 +1,5 @@
 Options -Indexes
+ServerSignature Off
 
 RewriteEngine On 
 RewriteCond %{REQUEST_FILENAME} !-f 
@@ -10,6 +11,14 @@ RewriteRule ^ /%1 [R=301,NE,L]
 
 RewriteRule /PMS/_404.php [R=301,L]
 RewriteRule /PMS/_403.php [R=301,L]
+
+RewriteCond %{REQUEST_METHOD} ^(GET)$
+RewriteCond %{HTTP:X-Requested-With} XMLHttpRequest [NC] # i had to add no case to work
+RewriteRule ^(.*)$ script.php?url=$1&get=true [NC,L,QSA]
+
+RewriteCond %{REQUEST_METHOD} ^(POST)$
+RewriteCond %{HTTP:X-Requested-With} XMLHttpRequest [NC]
+RewriteRule ^(.*)$ script2.php?url=$1&post=true [NC,L,QSA]
 
 ErrorDocument 403 /PMS/_403.php
 ErrorDocument 404 /PMS/_404.php
