@@ -16,7 +16,7 @@ function search_data($array, $search_val){
     foreach($array as $key => $value){
         // get array when data is search
         foreach($keys as $key){
-            if(strcasecmp($value[$key],$search_val) == 0){
+            if(strcasecmp($value[$key],$search_val) == 0 || strpos($value[$key],$search_val) !== false){
                 array_push($body,$value);
             }
         }
