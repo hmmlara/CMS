@@ -67,7 +67,7 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
             <th>Phone</th>
             <th>Function</th>
         </thead>
-        <tbody>
+        <tbody id="patient_table">
             <?php
                 foreach ($pagi_patients as $patient) {
             ?>
@@ -75,10 +75,10 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
                 <td><?php echo $patient["display_id"]; ?></td>
                 <td><?php echo $patient["name"]; ?></td>
                 <td><?php echo $patient["phone"]; ?></td>
-                <td>
+                <td id="<?php echo $patient["id"];?>">
                     <a href="patient_info?id=<?php echo $patient["id"]; ?>" class="btn btn-sm btn-info"><i
                             class="fas fa-pen"></i></a>
-                    <a href="" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></a>
+                    <button class="btn btn-sm btn-danger delete"><i class="fas fa-trash"></i></button>
                 </td>
             </tr>
 
@@ -87,6 +87,8 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
             ?>
         </tbody>
     </table>
+
+    <!-- pagination -->
     <nav aria-label="Page navigation example mx-auto">
         <ul class="pagination justify-content-center">
             <li class="page-item <?php echo ($pages == 1) ? 'disabled' : ''; ?>">
@@ -153,6 +155,7 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
             </li>
         </ul>
     </nav>
+    <!-- pagination -->
 </div>
 
 
