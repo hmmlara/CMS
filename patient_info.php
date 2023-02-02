@@ -40,10 +40,6 @@ if (isset($_GET["id"])) {
                             <h6>Gender:&nbsp;<span><?php echo $gender[$patient_infos["gender"]]; ?></span></h6>
                             <h6>Blood Type:&nbsp;<span><?php echo $patient_infos["blood_type"]; ?></span></h6>
                         </div>
-                        
-                        <div class="col-12 d-flex justify-content-center mt-3">
-                            <a href="patient_edit?id=<?php echo $_GET["id"];?>" class="btn btn-sm btn-dark">Edit</a>
-                        </div>
                     </div>
                 </div>
             </div>
