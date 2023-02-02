@@ -21,7 +21,9 @@ for ($i = 1; $i <= count($medicine); $i++) {
 }
 
 if(isset($_POST["search"])){
-    $medicine = search_data($medicine,$_POST["search_val"]);
+    if(!empty($_POST["search_val"])){
+        $medicine = search_data($medicine,$_POST["search_val"]);
+    }
 }
 
 ?>
