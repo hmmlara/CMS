@@ -119,6 +119,7 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
                     <?php
                         }
                         else{
+                            // condition for ... in pagination
                             if ($page <= $ends || ($pages && $page >= $pages - $middle && $page <= $pages + $middle) || $page > $num_of_pages - $ends) { 
                     ?>
                                 <li class='page-item'>
