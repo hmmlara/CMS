@@ -12,7 +12,7 @@ class Patient
 
         $this->pdo = Database::connect();
 
-        $query = "select * from patients";
+        $query = "select id,pr_code,name,phone from patients";
 
         $statment = $this->pdo->prepare($query);
 

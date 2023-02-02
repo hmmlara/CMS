@@ -63,6 +63,7 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
     <table class="table table-light table-collapse text-center">
         <thead>
             <th>Id</th>
+            <th>Patient Code</th>
             <th>Name</th>
             <th>Phone</th>
             <th>Function</th>
@@ -73,6 +74,7 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
             ?>
             <tr>
                 <td><?php echo $patient["display_id"]; ?></td>
+                <td><?php echo $patient["pr_code"];?></td>
                 <td><?php echo $patient["name"]; ?></td>
                 <td><?php echo $patient["phone"]; ?></td>
                 <td id="<?php echo $patient["id"];?>">
