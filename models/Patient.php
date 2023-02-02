@@ -104,4 +104,17 @@ class Patient
 
         return $statment->execute();
     }
+
+    protected function deletePatient($id){
+
+        $this->pdo = Database::connect();
+
+        $query = "delete from patients where id = :id";
+
+        $statement = $this->pdo->prepare($query);
+
+        $statement->bindParam(":id",$id);
+
+        return $statement->execute();
+    }
 }

@@ -28,4 +28,14 @@ class PatientController extends Patient
     public function update($data){
         return $this->updatePatient($data);
     }
+
+    // delete patient
+    public function delete($id){
+        try{
+            return $this->deletePatient($id);
+        }
+        catch(PDOException $e){
+            return false;
+        }
+    }
 }
