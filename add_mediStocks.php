@@ -29,30 +29,33 @@ if (isset($_POST["add"])) {
         $result = $stockController->addStock($data);
         // var_dump($result);
         if ($result) {
-            header("location:medicine.php");
+            header("location:stock_medicine.php");
         }
     }
 }
-
-
-
 ?>
 
-<div class="">
-    <div class="col-md-12">
-        <h3 class="col-md-12"><b>Add new Medicines</b></h3>
+
+<div class="container mt-5">
+   
+   <div class="row">
+   <h5 class="mb-4">Add Medicine Stock</h5>
+   <div class="row">
+        <div class="col-11 d-flex justify-content-between  mb-3">
+        </div>
+        <div class="col-1 me">
+           <a href="stock_medicine.php" class="text-dark text-decoration-underline">Back</a>
+        </div>
     </div>
-</div>
+   <hr class="hr-blurry">
 
-<div class="">
-    <div class="row">
+   <form method="post" class="col-12">
 
-        <form method="post" class="col-12">
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="formGroupExampleInput2">Medicine Name</label>
 
                 <select name="medicine_id" id="" class="<?php echo (isset($error_msg["medicine_id"])) ? 'form-control border border-danger' : 'form-control'; ?>">
-                    <option value="0" hidden selected>Select Category</option>
+                    <option value="0" hidden selected>-</option>
                     <?php
                     foreach ($medicines as $medi) {
                     ?>
@@ -71,7 +74,7 @@ if (isset($_POST["add"])) {
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="formGroupExampleInput2">Quantity</label>
                 <input type="text" name="qty" id="formGroupExampleInput2" class="<?php echo (isset($error_msg["qty"])) ? 'form-control border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["qty"])) ? $data["qty"] : ''; ?>">
 
@@ -84,7 +87,7 @@ if (isset($_POST["add"])) {
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="formGroupExampleInput2">Price</label>
                 <input type="text" name="price" class="<?php echo (isset($error_msg["price"])) ? 'form-control border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["price"])) ? $data["price"] : ''; ?>" id="formGroupExampleInput2">
 
@@ -96,7 +99,7 @@ if (isset($_POST["add"])) {
                     ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="formGroupExampleInput2">Manufacture Date</label>
                 <input type="date" name="man_date" class="<?php echo (isset($error_msg["man_date"])) ? 'form-control border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["man_date"])) ? $data["man_date"] : ''; ?>" id="formGroupExampleInput2">
 
@@ -108,7 +111,7 @@ if (isset($_POST["add"])) {
                     ?>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="formGroupExampleInput2">Expire Date</label>
                 <input type="date" name="exp_date" class="<?php echo (isset($error_msg["exp_date"])) ? 'form-control border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["exp_date"])) ? $data["exp_date"] : ''; ?>" id="formGroupExampleInput2">
 
@@ -121,10 +124,17 @@ if (isset($_POST["add"])) {
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary float-right" name="add">Add new medicine</button>
+            <div class="row">
+                <div class="col-11 d-flex justify-content-between  mb-3">
+                </div>
+                <div class="col-1 me">
+                    <button type="submit" class="btn btn-dark " name="add">Add</button>
+                </div>
+            </div>
 
         </form>
-    </div>
+   </div>   
+
 </div>
 
 <?php

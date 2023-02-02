@@ -25,6 +25,14 @@ class MedicineController extends Medicine
     public function addStock($data){
         return $this->addMediStock($data);
     }
+
+    public function getStockMedicine(){
+        return $this->getWarehouseStock();
+    }
+
+    public function getStockHistory($medicine_id){
+        return $this->getMediStkHis($medicine_id);
+    }
 }
 
 ?>
