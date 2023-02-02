@@ -60,7 +60,7 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
 
     <hr class="hr-blurry">
 
-    <table class="table table-light table-collapse">
+    <table class="table table-light table-collapse text-center">
         <thead>
             <th>Id</th>
             <th>Name</th>
@@ -76,7 +76,8 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
                 <td><?php echo $patient["name"]; ?></td>
                 <td><?php echo $patient["phone"]; ?></td>
                 <td id="<?php echo $patient["id"];?>">
-                    <a href="patient_info?id=<?php echo $patient["id"]; ?>" class="btn btn-sm btn-info"><i
+                    <a href="patient_info?id=<?php echo $patient["id"]; ?>" class="btn btn-sm btn-primary"><i class="fas fa-info-circle"></i></a>
+                    <a href="patient_edit?id=<?php echo $patient["id"]; ?>" class="btn btn-sm btn-info"><i
                             class="fas fa-pen"></i></a>
                     <button class="btn btn-sm btn-danger delete"><i class="fas fa-trash"></i></button>
                 </td>
