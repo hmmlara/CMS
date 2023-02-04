@@ -13,6 +13,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
         integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- for script -->
+    <script src="js/mdb.min.js"></script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src='js/index.global.js'></script>
 </head>
 
 <body>
@@ -50,8 +55,8 @@
                         <a class="nav-link mx-2" href="medicine">Medicines</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link mx-2" href="#">Schedules</a>
+                    <li class="nav-item <?php echo (strpos($page,'sche') !== false )? 'active' : '';?>">
+                        <a class="nav-link mx-2" href="schedule">Schedules</a>
                     </li>
 
                     <li class="nav-item">
