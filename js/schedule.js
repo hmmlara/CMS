@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function () {
       $("#event_details_modal").modal('hide');
       let id = $(this).attr("data-id");
 
-      if(!!schedules[id - 1]){
+      if(!!schedules[id]){
         let message = confirm('Are you sure?');
 
         if(message){
