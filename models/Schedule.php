@@ -18,13 +18,14 @@ class Schedule
         
         $statement = $this->pdo->prepare($query);
 
+        $result = [];
         $statement->execute();
 
         foreach($statement->fetchAll(PDO::FETCH_ASSOC) as $value){
             $result[$value["id"]] = $value;
         }
 
-        return $result;
+        return (count($result) > 0)? $result : $result = [];
     }
 
     // add schedule
