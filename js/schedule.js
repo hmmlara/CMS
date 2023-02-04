@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
       events_arr.push({ id: row.id, title: `Dr.${row.name}`, start: `${row.shift_day}T${row.shift_start}`, end: `${row.shift_day}T${row.shift_end}`, allDay: false });
     });
   }
-  console.log(schedules);
 
   var calendarEl = document.getElementById('calendar');
   var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -101,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function () {
               success: function (response) {
                   if(response == "success"){
                       alert('Success');
-                      window.location.href="http://localhost/CMS/schedule";
+                      window.location.href="http://localhost:"+window.location.port+"/CMS/schedule";
                   }
                   else{
                       alert("You can't delete!There is an appointment.");
