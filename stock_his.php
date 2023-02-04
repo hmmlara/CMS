@@ -51,6 +51,7 @@ for ($i = 1; $i <= count($mediStocks); $i++) {
                 <th>Man_Date</th>
                 <th>Exp Date</th>
                 <th>Enter Date</th>
+                <th>Functions</th>
             </tr>
         </thead>
         <tbody>
@@ -64,6 +65,9 @@ for ($i = 1; $i <= count($mediStocks); $i++) {
                         echo "<td>".$stockMedicine["man_date"]."</td>";
                         echo "<td>".$stockMedicine["exp_date"]."</td>";
                         echo "<td>".$stockMedicine["created_at"]."</td>";
+                        echo "<td class='pe-3'>";
+                        echo "<a href='' class='btn btn-dark mx-2'><i class='fas fa-edit'></i></a>";
+                        echo "<a href='' class='btn btn-dark mx-2'><i class='fa fa-trash'></i></a>";
                         echo "</td>";
                         echo"</tr>";
                     }

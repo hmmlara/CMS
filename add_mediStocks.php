@@ -124,6 +124,19 @@ if (isset($_POST["add"])) {
                 </div>
             </div>
 
+            <div class="form-group mb-3">
+                <label for="formGroupExampleInput2">Enter Date</label>
+                <input type="date" name="enter_date" class="<?php echo (isset($error_msg["enter_date"])) ? 'form-control border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data["enter_date"])) ? $data["enter_date"] : ''; ?>" id="formGroupExampleInput2">
+
+                <div>
+                    <?php
+                    if (isset($error_msg["enter_date"])) {
+                        echo "<small class='text-danger'>" . $error_msg["enter_date"] . "</small>";
+                    }
+                    ?>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-11 d-flex justify-content-between  mb-3">
                 </div>
