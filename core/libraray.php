@@ -25,3 +25,11 @@ function search_data($array, $search_val)
     }
     return $body;
 }
+
+// change 12 hours format to 24 hours format
+function format_24($time){
+    $datetime = new DateTime($time);
+
+    return $datetime->format("H:i");
+
+}
