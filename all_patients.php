@@ -92,19 +92,22 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
     </table>
 
     <!-- pagination -->
+    <?php 
+        // pagi page
+        $server_page = $_SERVER["PHP_SELF"];
+        $pre_page = ($server_page . '?pages=' . ($pages - 1));
+    ?>
     <nav aria-label="Page navigation example mx-auto">
         <ul class="pagination justify-content-center">
             <li class="page-item <?php echo ($pages == 1) ? 'disabled' : ''; ?>">
                 <a class="page-link"
-                    href="<?php echo ($pages == 2) ? 'all_patients' : $server_page . '?pages=' . ($pages - 1); ?>"
+                    href="<?php echo ($pages == 2) ? 'all_patients' : $pre_page; ?>"
                     aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                     <span class="sr-only">Previous</span>
                 </a>
             </li>
             <?php
-                // pagi page
-                $server_page = $_SERVER["PHP_SELF"];
                 $ellipse = false;
                 $ends = 1;
                 $middle = 2;
