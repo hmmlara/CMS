@@ -6,8 +6,10 @@ require_once "controllers/MediTypeController.php";
 require_once "./core/Request.php";
 require_once "./core/Validator.php";
 
+
 $editMeditypeController= new MediTypeController();
 //$result=$editMeditypeController->editMedicineType($data);
+
 if(isset($_GET["id"]))
 {
     $meditype = $editMeditypeController ->getById($_GET["id"]);
@@ -23,7 +25,6 @@ if(isset($_POST["update"]))
 
     // replace type
     $meditype["type"] = $data["type"];
-
 
     //for error message
 

@@ -118,6 +118,7 @@ if(isset($_POST["search"])){
                 echo "<td>".$medi_type["display_id"]."</td>";
                 echo "<td>".$medi_type["type"]."</td>";            
                 echo "<td class='pe-3'>";
+                echo "<a href='editMediType.php' class='btn btn-dark mx-2'><i class='fas fa-edit'></i></a>";
                 echo "<a href='' class='btn btn-black ml-2'><i class='fa fa-trash'></i></a>";
                 echo "</td>";
                 echo "</tr>";

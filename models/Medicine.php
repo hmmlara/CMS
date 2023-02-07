@@ -213,5 +213,34 @@ class Medicine{
 
         return $statement->execute();
      }
+
+     public function getEditStock($id)
+     {
+        $this->pdo=Database::connect();
+        $sql="select * from medi_stocks where id = :id";
+        $statement=$this->pdo->prepare($sql);
+
+        $statement->bindParam(":id",$id);
+
+        if ($statement->execute()){
+            return $statement->fetch(PDO::FETCH_ASSOC);            
+        }
+
+        return false;
+     }
+     
+     public function updateMedicineStock($data)
+     {
+        $this->pdo = Database::connect();
+        $sql = "UPDATE `medi_stocks` SET  `qty` = :qty , `price` = :price , `man_date` = :man_date, `exp_date` = :exp_date , `created_at` = :created_at WHERE `medi_stocks`.`id` = :id";
+        $statement=$this->pdo->prepare($sql);
+
+        foreach($data as $key => $value)
+        {
+            $statement->bindParam(":$key",$data[$key]);
+
+        }
+        return $statement->execute();
+     }
 }
 ?>
