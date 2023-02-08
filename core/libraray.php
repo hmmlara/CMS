@@ -33,3 +33,15 @@ function format_24($time){
     return $datetime->format("H:i");
 
 }
+
+// reduce function for only number associative array
+function reduce_for_assoc_num_arr($array){
+    $result = 0;
+    foreach($array as $arr){
+        foreach($arr as $val){
+            $result += $val;
+        }
+    }
+    
+    return $result;
+}
