@@ -46,10 +46,11 @@ class Doctor{
 
         $statement =$this->pdo ->prepare($sql);
 
+            // hashing and overwirting password from $data['password']
+            $data["password"] = password_hash($data["password"],PASSWORD_DEFAULT);
 
             $statement->bindParam(":acc_name",$data["acc_name"]);
             $statement->bindParam(":password",$data["password"]);
-            // var_dump($data["password"]);
             $date_time = date('Y-m-d');
             $statement->bindParam(":created_at",$date_time);
             $statement->bindParam(":updated_at",$date_time);
@@ -68,7 +69,7 @@ class Doctor{
 
         $this->pdo = Database::connect();
 
-        $query ="insert into user_infos(user_id,name,user_code,age,education,martial_status,nrc,gender,created_at,updated_at,img) values (:user_id,:name,:user_code,:age,:education,:martial_status,:nrc,:gender,:created_at,:updated_at,:img)";
+        $query ="insert into user_infos(user_id,name,user_code,age,phone,education,martial_status,nrc,gender,specialities,created_at,updated_at,img) values (:user_id,:name,:user_code,:age,:phone,:education,:martial_status,:nrc,:gender,:specialities,:created_at,:updated_at,:img)";
         
         $statement = $this->pdo->prepare($query);
 
@@ -81,9 +82,11 @@ class Doctor{
         $statement->bindParam(":img",$data["img"]);
         $statement->bindParam(":nrc",$data["nrc"]);
         $statement->bindParam(":gender",$data["gender"]);
+        $statement->bindParam(":phone",$data["phone"]);
+        $statement->bindParam(":specialities",$data["speciality"]);
 
         // var_dump($user_id);
-        // var_dump($data);
+        // var_dump($data["speciality"]);
 
         $date_now = date('Y-m-d');
 
@@ -94,7 +97,7 @@ class Doctor{
     }
 
     //get UserId
-    public function getUserId(){
+    private function getUserId(){
 
         $this->pdo = Database::connect();
 
@@ -144,7 +147,7 @@ class Doctor{
         $state->execute();
         $img = $state->fetch(PDO::FETCH_ASSOC)["img"];
 
-        $query = "UPDATE user_infos SET user_code= :user_code,name=:name,age=:age,nrc=:nrc,education=:education,martial_status=:martial_status, gender=:gender, img=:img, updated_at = :updated_at 
+        $query = "UPDATE user_infos SET user_code= :user_code,name=:name,age=:age,nrc=:nrc,education=:education,martial_status=:martial_status, gender=:gender, img=:img, phone=:phone, specialities=:specialities, updated_at = :updated_at 
                      WHERE user_id = :user_id" ;
  
          $statement = $this->pdo->prepare($query);
@@ -157,6 +160,8 @@ class Doctor{
          $statement->bindParam(":martial_status",$data["status"]);
          $statement->bindParam(":img",$data["img"]);
          $statement->bindParam(":nrc",$data["nrc"]);
+         $statement->bindParam(":phone",$data["phone"]);
+         $statement->bindParam(":specialities",$data["speciality"]);
          $statement->bindParam(":gender",$data["gender"]);
          $statement->bindParam(":updated_at",$data["updated_at"]);
         
@@ -206,7 +211,7 @@ class Doctor{
         return false;
     }
 
-    private function getIdById($id){
+    public function getIdById($id){
 
         $this->pdo = Database::connect();
 
@@ -220,11 +225,11 @@ class Doctor{
 
         $result = $statement->fetch(PDO::FETCH_ASSOC)["id"];
 
-        var_dump($result);
+        // var_dump($result);
         return $result;
     }
 
-    private function getImageById($id){
+    public function getImageById($id){
 
         $this->pdo = Database::connect();
 
