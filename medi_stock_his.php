@@ -48,6 +48,7 @@ for ($i = 1; $i <= count($mediStocks); $i++) {
                 <th>Id</th>
                 <th>Medicine_Name</th>
                 <th>Quantity</th>
+                <th>Price</th>
                 <th>Man_Date</th>
                 <th>Exp Date</th>
                 <th>Enter Date</th>
@@ -62,11 +63,12 @@ for ($i = 1; $i <= count($mediStocks); $i++) {
                         echo "<td>".$stockMedicine['dis_id']."</td>";
                         echo "<td>".$stockMedicine['name']."</td>";
                         echo "<td>".$stockMedicine['qty']."</td>";
+                        echo "<td>".$stockMedicine["price"]."</td>";
                         echo "<td>".$stockMedicine["man_date"]."</td>";
                         echo "<td>".$stockMedicine["exp_date"]."</td>";
-                        echo "<td>".$stockMedicine["created_at"]."</td>";
+                        echo "<td>".$stockMedicine["enter_date"]."</td>";
                         echo "<td class='pe-3'>";
-                        echo "<a href='editMediStock_his.php' class='btn btn-dark mx-2'><i class='fas fa-edit'></i></a>";
+                        echo "<a href='edit_medistock_his?id=".$stockMedicine["id"]."' class='btn btn-dark mx-2'><i class='fas fa-edit'></i></a>";
                         echo "<a href='' class='btn btn-dark mx-2'><i class='fa fa-trash'></i></a>";
                         echo "</td>";
                         echo"</tr>";

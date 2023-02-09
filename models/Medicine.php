@@ -21,7 +21,7 @@ class Medicine{
     {
         $this->pdo=Database::connect();
 
-        $sql="select *,medi_category.category_name,medi_type.type from medicines join medi_category on medicines.category_id = medi_category.id
+        $sql="select medicines.*,medi_category.category_name,medi_type.type from medicines join medi_category on medicines.category_id = medi_category.id
             join medi_type on medicines.type_id = medi_type.id";
 
         $statement=$this->pdo->prepare($sql);
@@ -73,8 +73,8 @@ class Medicine{
     {
         $this->pdo=Database::connect();
 
-        $sql="INSERT INTO `medi_stocks`(`medicine_id`, `qty`, `price`, `man_date`, `exp_date`, `created_at`, `updated_at`) VALUES  
-        ( :medicine_id, :qty, :price, :man_date, :exp_date,:created_at,:updated_at)";
+        $sql="INSERT INTO `medi_stocks`(`medicine_id`, `qty`, `price`, `man_date`, `exp_date`,`enter_date`, `created_at`, `updated_at`) VALUES  
+        ( :medicine_id, :qty, :price, :man_date, :exp_date,:enter_date,:created_at,:updated_at)";
 
         $statement=$this->pdo->prepare($sql);
 
@@ -119,7 +119,7 @@ class Medicine{
 
         $this->pdo = Database::connect();
 
-        $sql = "select *,medicines.name from medi_stocks
+        $sql = "select medi_stocks.*,medicines.name from medi_stocks
             join medicines on medicines.id = medi_stocks.medicine_id where medicine_id = :medicine_id";
 
         $statement = $this->pdo->prepare($sql);
@@ -197,27 +197,33 @@ class Medicine{
         /*
          data prepare
          */
-        $total_qty = $this->getWarehouseQty($data["medicine_id"]);
+            $total_qty = $this->getWarehouseQty($data["medicine_id"]);
 
-        $total_qty += $data["qty"];
+            $qtys = $this->getSpecificItem($data["medicine_id"]);
 
-        // start query
-        $this->pdo = Database::connect();
+            $total_qty += array_reduce($qtys,function($qty1,$qty2){
+                return $qty1 += $qty2;
+            });
 
-        $sql = "update medi_warehouses set total_qty = :total_qty where medicine_id = :medicine_id";
-
-        $statement = $this->pdo->prepare($sql);
-
-        $statement->bindParam(":total_qty",$total_qty);
-        $statement->bindParam(":medicine_id",$data["medicine_id"]);
-
-        return $statement->execute();
+            // start query
+            $this->pdo = Database::connect();
+    
+            $sql = "update medi_warehouses set total_qty = :total_qty where medicine_id = :medicine_id";
+    
+            $statement = $this->pdo->prepare($sql);
+    
+            $statement->bindParam(":total_qty",$total_qty);
+            $statement->bindParam(":medicine_id",$data["medicine_id"]);
+    
+            return $statement->execute();
      }
 
      public function getEditStock($id)
      {
         $this->pdo=Database::connect();
-        $sql="select * from medi_stocks where id = :id";
+        $sql="select medi_stocks.*,medicines.name from medi_stocks 
+            join medicines on medicines.id = medi_stocks.medicine_id
+             where medi_stocks.id = :id";
         $statement=$this->pdo->prepare($sql);
 
         $statement->bindParam(":id",$id);
@@ -231,8 +237,11 @@ class Medicine{
      
      public function updateMedicineStock($data)
      {
+        $data["updated_at"] = date('Y-m-d');
+
+        var_dump($data);
         $this->pdo = Database::connect();
-        $sql = "UPDATE `medi_stocks` SET  `qty` = :qty , `price` = :price , `man_date` = :man_date, `exp_date` = :exp_date , `created_at` = :created_at WHERE `medi_stocks`.`id` = :id";
+        $sql = "UPDATE `medi_stocks` SET  `qty` = :qty , `price` = :price , `man_date` = :man_date, `exp_date` = :exp_date ,`enter_date` = :enter_date, `updated_at` = :updated_at WHERE `medi_stocks`.`id` = :id";
         $statement=$this->pdo->prepare($sql);
 
         foreach($data as $key => $value)
@@ -240,7 +249,46 @@ class Medicine{
             $statement->bindParam(":$key",$data[$key]);
 
         }
+
         return $statement->execute();
      }
+
+    // get medicine detail
+    public function getMedicineDetails($id){
+        $this->pdo = Database::connect();
+
+        $sql = 'select medicines.*,medi_type.type,medi_category.category_name from medicines
+                join medi_type on medi_type.id = medicines.type_id
+                join medi_category on medi_category.id = medicines.category_id
+                where medicines.id = :id';
+
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->bindParam(":id",$id);
+
+        if($statement->execute()){
+            return $statement->fetch(PDO::FETCH_ASSOC);
+        }
+
+        return false;
+    }
+
+    // get medi stocks of specific item
+    private function getSpecificItem($medicine_id){
+        
+        $this->pdo = Database::connect();
+
+        $sql = 'select qty from medi_stocks where medicine_id = :medicine_id';
+
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->bindParam(":medicine_id",$medicine_id);
+
+        if($statement->execute()){
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        return false;
+    }
 }
 ?>

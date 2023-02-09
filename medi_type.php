@@ -53,7 +53,6 @@ if(isset($_POST["add"]))
 if(isset($_POST["search"])){
     $meditype = search_data($meditype,$_POST["search_val"]);
 }
-
 ?>
 
 <div class="container mt-5">
@@ -110,7 +109,7 @@ if(isset($_POST["search"])){
                         <th>Functions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="type_table">
                     <?php
             foreach($meditype as $medi_type)
             {
@@ -118,8 +117,7 @@ if(isset($_POST["search"])){
                 echo "<td>".$medi_type["display_id"]."</td>";
                 echo "<td>".$medi_type["type"]."</td>";            
                 echo "<td class='pe-3'>";
-                echo "<a href='editMediType.php' class='btn btn-dark mx-2'><i class='fas fa-edit'></i></a>";
-                echo "<a href='' class='btn btn-black ml-2'><i class='fa fa-trash'></i></a>";
+                echo "<button class='btn btn-danger ml-2 delete' id='".$medi_type["id"]."'><i class='fa fa-trash'></i></button>";
                 echo "</td>";
                 echo "</tr>";
             }

@@ -73,7 +73,18 @@ class MediType{
         return $statment->execute();
     }
     
+    // delete type
+    public function deleteType($id){
+        $this->pdo = Database::connect();
 
+        $sql = "delete from medi_type where id = :id";
+
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->bindParam(":id",$id);
+
+        return $statement->execute();
+    }
 }
 
 ?>

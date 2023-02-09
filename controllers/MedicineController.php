@@ -44,6 +44,11 @@ class MedicineController extends Medicine
         $result=$this->updateMedicineStock($data);
         return $result;
     }
+
+    // get medicine details
+    public function getDetails($id){
+        return $this->getMedicineDetails($id);
+    }
 }
 
 ?>
