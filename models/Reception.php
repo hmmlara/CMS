@@ -1,81 +1,51 @@
 <?php
+
 require_once __DIR__."/../core/Database.php";
 
-class Doctor{
+
+class Reception{
     private $pdo;
 
-    protected function getDoctorLists(){
+    //add 
+    public function addUser($data){
+
         $this->pdo=Database::connect();
 
-        $sql="SELECT users.id,user_infos.name, user_infos.user_code,user_infos.age,user_infos.education,user_infos.martial_status,user_infos.nrc,user_infos.gender,user_infos.img
-        FROM users
-        JOIN user_infos ON users.id = user_infos.user_id
-        JOIN roles ON roles.id = users.role_id
-        WHERE users.role_id = 2";
+        $sql = "insert into users(role_id,acc_name,password,created_at,updated_at) Values (3,:acc_name,:password,:created_at,:updated_at)";
+
+       $statement= $this->pdo->prepare($sql);
         
-        $statement=$this->pdo->prepare($sql);
-        $statement->execute();
+       //password hashing
+        $data["password"]=password_hash($data["password"],PASSWORD_DEFAULT);
 
-        $result=$statement->fetchAll(PDO::FETCH_ASSOC);
-        return $result;
+       $statement->bindParam(":acc_name",$data["acc_name"]);
+       $statement->bindParam(":password",$data["password"]);
+            
+       $date_time = date('Y-m-d');
+       $statement->bindParam(":created_at",$date_time);
+       $statement->bindParam(":updated_at",$date_time);
+
+       if($statement->execute()){
+        $user_id=$this->getUserId();
+        $data['user_id']=$user_id;
+        return $this->addReceptionist($user_id,$data);
+
+       }
+
     }
 
-     // Get Doctor Code dr()
-     protected function getDoctorCode(){
+    //add Receptionist
+    private function addReceptionist($user_id,$data){
 
         $this->pdo = Database::connect();
 
-        $query = "select user_code from user_infos where user_code like '%dr-%'";
-
-        $statement = $this->pdo->prepare($query);
-
-        $statement->execute();
-
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-        // return the latest pr_code of an array
-        return (count($result) > 0)? $result[count($result) - 1]["user_code"] : '';
-    }
-
-
-    //add user
-    public function addUser($data){
-        $this->pdo = Database::connect();
-
-        $sql = "insert into users(role_id,acc_name,password,created_at,updated_at) Values (2,:acc_name,:password,:created_at,:updated_at)";
-
-        $statement =$this->pdo ->prepare($sql);
-
-            // hashing and overwirting password from $data['password']
-            $data["password"] = password_hash($data["password"],PASSWORD_DEFAULT);
-
-            $statement->bindParam(":acc_name",$data["acc_name"]);
-            $statement->bindParam(":password",$data["password"]);
-            $date_time = date('Y-m-d');
-            $statement->bindParam(":created_at",$date_time);
-            $statement->bindParam(":updated_at",$date_time);
-
-        if($statement->execute()){
-        //    $user= $this->addDoctor($data);
-        //    echo $return;
-            $user_id=$this->getUserId();
-            $data['user_id'] = $user_id;
-            return $this->addDoctor($user_id,$data);
-        }
-    }
-
-    //add Doctor
-    private function addDoctor($user_id,$data){
-
-        $this->pdo = Database::connect();
-
-        $query ="insert into user_infos(user_id,name,user_code,age,phone,education,martial_status,nrc,gender,specialities,created_at,updated_at,img) values (:user_id,:name,:user_code,:age,:phone,:education,:martial_status,:nrc,:gender,:specialities,:created_at,:updated_at,:img)";
+        $query ="insert into user_infos(user_id,name,user_code,age,phone,education,martial_status,nrc,gender,created_at,updated_at,img) values (:user_id,:name,:user_code,:age,:phone,:education,:martial_status,:nrc,:gender,:created_at,:updated_at,:img)";
         
         $statement = $this->pdo->prepare($query);
 
         $statement->bindParam(":user_id",$user_id);
-        $statement->bindParam(":name",$data["dname"]);
-        $statement->bindParam(":user_code",$data["dr_code"]);
+        $statement->bindParam(":name",$data["rname"]);
+        $statement->bindParam(":user_code",$data["rp_code"]);
         $statement->bindParam(":age",$data["age"]);
         $statement->bindParam(":education",$data["education"]);
         $statement->bindParam(":martial_status",$data["status"]);
@@ -83,10 +53,8 @@ class Doctor{
         $statement->bindParam(":nrc",$data["nrc"]);
         $statement->bindParam(":gender",$data["gender"]);
         $statement->bindParam(":phone",$data["phone"]);
-        $statement->bindParam(":specialities",$data["speciality"]);
+        // $statement->bindParam(":specialities",$data["speciality"]);
 
-        // var_dump($user_id);
-        // var_dump($data["speciality"]);
 
         $date_now = date('Y-m-d');
 
@@ -101,7 +69,7 @@ class Doctor{
 
         $this->pdo = Database::connect();
 
-        $query = "select id from users where role_id = 2";
+        $query = "select id from users where role_id = 3";
 
         $statement = $this->pdo->prepare($query);
 
@@ -111,8 +79,42 @@ class Doctor{
         return $result[count($result) - 1]["id"];
     }
 
-    //get DoctorDetail
-    public function getDoctorDetail($id){
+    //provide ReceptionLists
+    public function getReceptionLists(){
+        $this->pdo=Database::connect();
+
+        $sql="SELECT users.id,user_infos.name, user_infos.user_code,user_infos.age,user_infos.phone,user_infos.education,user_infos.martial_status,user_infos.nrc,user_infos.gender,user_infos.img
+        FROM users
+        JOIN user_infos ON users.id = user_infos.user_id
+        JOIN roles ON roles.id = users.role_id
+        WHERE users.role_id = 3";
+        
+        $statement=$this->pdo->prepare($sql);
+        $statement->execute();
+
+        $result=$statement->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+    }
+
+     // Get Reception Code rp()
+     protected function getReceptionCode(){
+
+        $this->pdo = Database::connect();
+
+        $query = "select user_code from user_infos where user_code like '%rp-%'";
+
+        $statement = $this->pdo->prepare($query);
+
+        $statement->execute();
+
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // return the latest pr_code of an array
+        return (count($result) > 0)? $result[count($result) - 1]["user_code"] : '';
+    }
+
+    //Reception Detail
+     public function getReceptionDetail($id){
         $this->pdo = Database::connect();
 
         $query = "select * from user_infos join users where user_infos.user_id= :id and users.id= :id";
@@ -131,8 +133,9 @@ class Doctor{
         }
     }
 
-    //update Doctor
-    protected function updateDoctor($data){
+
+    //update Reception
+    protected function updateReception($data){
 
         $this->pdo = Database::connect();
 
@@ -147,21 +150,20 @@ class Doctor{
         $state->execute();
         $img = $state->fetch(PDO::FETCH_ASSOC)["img"];
 
-        $query = "UPDATE user_infos SET user_code= :user_code,name=:name,age=:age,nrc=:nrc,education=:education,martial_status=:martial_status, gender=:gender, img=:img, phone=:phone, specialities=:specialities, updated_at = :updated_at 
+        $query = "UPDATE user_infos SET user_code= :user_code,name=:name,age=:age,nrc=:nrc,education=:education,martial_status=:martial_status, gender=:gender, img=:img, phone=:phone, updated_at = :updated_at 
                      WHERE user_id = :user_id" ;
  
          $statement = $this->pdo->prepare($query);
  
          $statement->bindParam(":user_id",$data["user_id"]);
-         $statement->bindParam(":name",$data["dname"]);
-         $statement->bindParam(":user_code",$data["dr_code"]);
+         $statement->bindParam(":name",$data["rname"]);
+         $statement->bindParam(":user_code",$data["rp_code"]);
          $statement->bindParam(":age",$data["age"]);
          $statement->bindParam(":education",$data["education"]);
          $statement->bindParam(":martial_status",$data["status"]);
          $statement->bindParam(":img",$data["img"]);
          $statement->bindParam(":nrc",$data["nrc"]);
          $statement->bindParam(":phone",$data["phone"]);
-         $statement->bindParam(":specialities",$data["speciality"]);
          $statement->bindParam(":gender",$data["gender"]);
          $statement->bindParam(":updated_at",$data["updated_at"]);
         
@@ -179,8 +181,10 @@ class Doctor{
 
     }
 
-    //Delete Doctor
-    protected function deleteDoc($id){
+
+    //Delete Reception
+    
+    protected function deleteReception($id){
         $this->pdo=Database::connect();
 
         $sql="Delete from users where id=$id";
@@ -211,7 +215,7 @@ class Doctor{
         return false;
     }
 
-    public function getIdById($id){
+    private function getIdById($id){
 
         $this->pdo = Database::connect();
 
@@ -229,7 +233,7 @@ class Doctor{
         return $result;
     }
 
-    public function getImageById($id){
+    private function getImageById($id){
 
         $this->pdo = Database::connect();
 
@@ -243,5 +247,8 @@ class Doctor{
 
         return $statement->fetch(PDO::FETCH_ASSOC)["img"];
     }
+
 }
+
+
 ?>

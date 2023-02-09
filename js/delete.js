@@ -1,4 +1,8 @@
+
+
 $(document).ready(function(){
+
+    //delete Doctor
     $('#del_doc').click(function(){
 
         let message = confirm('Are you sure?');
@@ -49,51 +53,27 @@ $(document).ready(function(){
         }
     });
 
-    // delete medicine type
-    $('#type_table .delete').click(function(){
-        let id = $(this).attr("id");
-        let td = $(this).closest('td');
+    //delete reception
+    $('#rep_table .delete').click(function(){
 
-        let message = confirm('Are you sure?');
-
+        let message=confirm("are you sure want to delete");
         if(message){
+            let td=$(this).closest('td');
+            let id = td.attr('id');
             $.ajax({
                 type: "post",
-                url: "delete_meditype",
-                data: {id:id},
+                url: "delete_reception",
+                data:{id: id},
                 success: function (response) {
-                    if(response == "success"){
-                        td.closest("tr").remove();
+                    if(response == 'success'){
+                        alert('success');
+                        td.closest('tr').remove();
                     }
                     else{
-                        alert('Cannot delete type!');
+                        alert("Can't delete");
                     }
                 }
             });
         }
-    });
-
-    // delete medicine category
-    $('#category_table .delete').click(function () {
-        let id = $(this).attr("id");
-        let td = $(this).closest('td');
-
-        let message = confirm('Are you sure?');
-
-        if (message) {
-            $.ajax({
-                type: "post",
-                url: "delete_medicategory",
-                data: { id: id },
-                success: function (response) {
-                    if (response == "success") {
-                        td.closest("tr").remove();
-                    }
-                    else {
-                        alert('Cannot delete category!');
-                    }
-                }
-            });
-        }
-    });
+    })
 })

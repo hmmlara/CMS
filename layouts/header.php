@@ -48,7 +48,7 @@
                     </li>
 
                     <li class="nav-item <?php echo (strpos($page,'reception') !== false )? 'active' : '';?>">
-                        <a class="nav-link mx-2" href="">Receptionists</a>
+                        <a class="nav-link mx-2" href="all_receptionists">Receptionists</a>
                     </li>
                     <li class="nav-item <?php echo (strpos($page,'medi') !== false )? 'active' : '';?>">
                         <a class="nav-link mx-2" href="medicine">Medicines</a>
