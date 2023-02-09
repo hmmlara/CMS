@@ -1,4 +1,8 @@
+
+
 $(document).ready(function(){
+
+    //delete Doctor
     $('#del_doc').click(function(){
 
         let message = confirm('Are you sure?');
@@ -48,4 +52,29 @@ $(document).ready(function(){
             
         }
     });
+
+    //delete reception
+    $('#rep_table .delete').click(function(){
+
+        let message=confirm("are you sure want to delete");
+        if(message){
+            let td=$(this).closest('td');
+            let id = td.attr('id');
+            //console.log(id);
+            $.ajax({
+                type: "post",
+                url: "delete_reception",
+                data:{id: id},
+                success: function (response) {
+                    if(response == 'success'){
+                        alert('success');
+                        td.closest('tr').remove();
+                    }
+                    else{
+                        alert("Can't delete");
+                    }
+                }
+            });
+        }
+    })
 })
