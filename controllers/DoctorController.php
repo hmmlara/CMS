@@ -21,6 +21,7 @@ class DoctorController extends Doctor{
 
     }
 
+    //Doctor Detail
     public function getDetail($id){
         return $this->getDoctorDetail($id);
     }
