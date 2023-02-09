@@ -14,5 +14,14 @@ class MediCategoryController extends MedicineCategory
         $result=$this->getAddCategory($data);
         return $result;
     }
+    
+    public function delete($id){
+        try{
+            return $this->deleteCategory($id);
+        }
+        catch(PDOException $e){
+            return false;
+        }
+    }
 }
 ?>

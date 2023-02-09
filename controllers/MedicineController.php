@@ -33,6 +33,22 @@ class MedicineController extends Medicine
     public function getStockHistory($medicine_id){
         return $this->getMediStkHis($medicine_id);
     }
+
+    public function getById($id)
+    {
+        return $this->getEditStock($id);
+    }
+
+    public function editMedicineStock($data)
+    {
+        $result=$this->updateMedicineStock($data);
+        return $result;
+    }
+
+    // get medicine details
+    public function getDetails($id){
+        return $this->getMedicineDetails($id);
+    }
 }
 
 ?>

@@ -26,6 +26,15 @@ class MediTypeController extends MediType
         $result=$this->updateMeditype($data);
         return $result;
     }
+
+    public function delete($id){
+        try{
+            return $this->deleteType($id);
+        }
+        catch(PDOException $e){
+            return false;
+        }
+    }
 }
  
 ?>

@@ -48,4 +48,52 @@ $(document).ready(function(){
             
         }
     });
+
+    // delete medicine type
+    $('#type_table .delete').click(function(){
+        let id = $(this).attr("id");
+        let td = $(this).closest('td');
+
+        let message = confirm('Are you sure?');
+
+        if(message){
+            $.ajax({
+                type: "post",
+                url: "delete_meditype",
+                data: {id:id},
+                success: function (response) {
+                    if(response == "success"){
+                        td.closest("tr").remove();
+                    }
+                    else{
+                        alert('Cannot delete type!');
+                    }
+                }
+            });
+        }
+    });
+
+    // delete medicine category
+    $('#category_table .delete').click(function () {
+        let id = $(this).attr("id");
+        let td = $(this).closest('td');
+
+        let message = confirm('Are you sure?');
+
+        if (message) {
+            $.ajax({
+                type: "post",
+                url: "delete_medicategory",
+                data: { id: id },
+                success: function (response) {
+                    if (response == "success") {
+                        td.closest("tr").remove();
+                    }
+                    else {
+                        alert('Cannot delete category!');
+                    }
+                }
+            });
+        }
+    });
 })

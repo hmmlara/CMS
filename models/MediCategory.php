@@ -37,6 +37,18 @@ class MedicineCategory {
 
         
     }
+    // delete category
+    public function deleteCategory($id){
+        $this->pdo = Database::connect();
+
+        $sql = "delete from medi_category where id = :id";
+
+        $statement = $this->pdo->prepare($sql);
+
+        $statement->bindParam(":id",$id);
+        
+        return $statement->execute();
+    }
 }
 
 ?>

@@ -76,7 +76,7 @@ if(isset($_POST["search"])){
                         echo "<td>".$stockMedicine['name']."</td>";
                         echo "<td>".$stockMedicine['total_qty']."</td>";
                         // echo "</td>";
-                        echo "<td><a class='btn btn-black' href='stock_his.php?id=".$stockMedicine["medicine_id"]."'>
+                        echo "<td><a class='btn btn-black' href='medi_stock_his.php?id=".$stockMedicine["medicine_id"]."'>
                                 <i class='fa fa-history'></i>
                                 </a></td>";
                         echo"</tr>";
