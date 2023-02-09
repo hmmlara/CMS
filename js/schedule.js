@@ -21,21 +21,27 @@ document.addEventListener('DOMContentLoaded', function () {
     themeSystem: 'bootstrap',
     editable: true,
     selectable: true,
+    eventLimit: true,
     events: events_arr,
+    views: {
+      dayGridMonth: {
+        dayMaxEventRows: 2
+      }
+    },
     eventClick: function (info) {
       var _details = $('#event_details_modal');
       var id = info.event.id;
-      console.log(id);
+      //console.log(id);
 
       // Change 24 hrs to 12 hrs format for display
-      const shift_start = new Date(schedules[id].shift_day +'T'+schedules[id].shift_start+ 'Z')
+      const shift_start = new Date(schedules[id].shift_day + 'T' + schedules[id].shift_start + 'Z')
         .toLocaleTimeString('en-US',
           { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' }
         );
-      const shift_end = new Date(schedules[id].shift_day +'T'+schedules[id].shift_end+ 'Z')
-      .toLocaleTimeString('en-US',
-        { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' }
-      );
+      const shift_end = new Date(schedules[id].shift_day + 'T' + schedules[id].shift_end + 'Z')
+        .toLocaleTimeString('en-US',
+          { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' }
+        );
 
       if (!!schedules[id]) {
         _details.find('#name').text(`Dr.${schedules[id].name}`);
@@ -52,64 +58,64 @@ document.addEventListener('DOMContentLoaded', function () {
   calendar.render();
 
   // Edit Button
-  $('#edit').click(function() {
+  $('#edit').click(function () {
     var id = $(this).attr('data-id');
     if (!!schedules[id]) {
-        var _form = $('#schedule_form')
-        _form.find('[name="id"]').val(id);
-        _form.find('[name="user_id"]').val(schedules[id].user_id);
-        _form.find('[name="shift_day"]').val(schedules[id].shift_day);
-        _form.find('[name="shift_start"]').val(schedules[id].shift_start);
-        _form.find('[name="shift_end"]').val(schedules[id].shift_end);
-        let btns = '<button class="btn btn-info mx-3" name="update">Update</button><button class="btn btn-secondary" name="cancel">Cancel</button>';
-        $('#btn-group').html(btns);
-        // for page refresh
-        $.ajax({
-          type: "post",
-          url: "saveBtnSession",
-          data: {btns: btns},
-          success: function (response) {
-            
-          }
-        });
+      var _form = $('#schedule_form')
+      _form.find('[name="id"]').val(id);
+      _form.find('[name="user_id"]').val(schedules[id].user_id);
+      _form.find('[name="shift_day"]').val(schedules[id].shift_day);
+      _form.find('[name="shift_start"]').val(schedules[id].shift_start);
+      _form.find('[name="shift_end"]').val(schedules[id].shift_end);
+      let btns = '<button class="btn btn-info mx-3" name="update">Update</button><button class="btn btn-secondary" name="cancel">Cancel</button>';
+      $('#btn-group').html(btns);
+      // for page refresh
+      $.ajax({
+        type: "post",
+        url: "saveBtnSession",
+        data: { btns: btns },
+        success: function (response) {
 
-        $('#event_details_modal').modal('hide');
+        }
+      });
+
+      $('#event_details_modal').modal('hide');
     } else {
-        alert("Schedule is undefined");
+      alert("Schedule is undefined");
     }
-});
+  });
 
   // close model
-  $('#event_details_modal #close').click(function(){
-      $('#event_details_modal').modal('hide');
+  $('#event_details_modal #close').click(function () {
+    $('#event_details_modal').modal('hide');
   });
 
   // delete schedule
-  $('#event_details_modal #delete').click(function(){
-      $("#event_details_modal").modal('hide');
-      let id = $(this).attr("data-id");
+  $('#event_details_modal #delete').click(function () {
+    $("#event_details_modal").modal('hide');
+    let id = $(this).attr("data-id");
 
-      if(!!schedules[id]){
-        let message = confirm('Are you sure?');
+    if (!!schedules[id]) {
+      let message = confirm('Are you sure?');
 
-        if(message){
-            $.ajax({
-              type: "post",
-              url: "delete_schedule",
-              data: {id: id},
-              success: function (response) {
-                  if(response == "success"){
-                      alert('Success');
-                      window.location.href="http://localhost:"+window.location.port+"/CMS/schedule";
-                  }
-                  else{
-                      alert("You can't delete!There is an appointment.");
-                  }
-              }
-            });
-        }
-      }else{
-        alert('Schedule is undefined');
+      if (message) {
+        $.ajax({
+          type: "post",
+          url: "delete_schedule",
+          data: { id: id },
+          success: function (response) {
+            if (response == "success") {
+              alert('Success');
+              window.location.href = "http://localhost:" + window.location.port + "/CMS/schedule";
+            }
+            else {
+              alert("You can't delete!There is an appointment.");
+            }
+          }
+        });
       }
+    } else {
+      alert('Schedule is undefined');
+    }
   })
 });
