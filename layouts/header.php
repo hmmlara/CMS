@@ -21,9 +21,12 @@
 </head>
 
 <body>
-
+    <?php 
+        // for active ui
+        $page = explode('.php',$_SERVER["PHP_SELF"])[0];
+    ?>
     <!-- navbar start -->
-    <nav class="navbar navbar-expand-lg bg-light">
+    <nav class="navbar navbar-expand-lg bg-light <?php echo (strpos($page,'login') !== false)? 'd-none': '';?>">
         <div class="container-fluid">
             <a class="navbar-brand text-dark" href="index.php">CMS</a>
             <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarNav"
@@ -32,10 +35,6 @@
             </button>
             <div class="collapse navbar-collapse bg-light" id="navbarNav">
                 <ul class="navbar-nav">
-                    <?php 
-                        // for active ui
-                        $page = explode('.php',$_SERVER["PHP_SELF"])[0];
-                    ?>
                     <li class="nav-item <?php echo (strpos($page,'index') !== false )? 'active' : '';?>">
                         <a class="nav-link mx-2" aria-current="page" href="index">Dashboard</a>
                     </li>
