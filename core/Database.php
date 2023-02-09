@@ -1,6 +1,4 @@
 <?php
-
-
 require_once 'DotEnv.php';
 class Database
 {

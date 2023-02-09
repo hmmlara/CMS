@@ -1,25 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php 
+    require_once './layouts/header.php';
+?>
 
-<head>
-
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>SB Admin 2 - Login</title>
-
-    <?php
-    include_once "./layouts/include_css.php";
-    ?>
-
-</head>
-
-<body class="bg-gradient-primary">
-
-    <div class="container">
+    <div class="container w-50">
 
         <!-- Outer Row -->
         <div class="row justify-content-center">
@@ -43,13 +26,6 @@
                                     <label for="">Password</label>
                                     <input type="password" class="form-control" id="exampleInputPassword" placeholder="Password">
                                 </div>
-
-                                <div class="form-group mb-3">
-                                    <label for="">Role</label>
-                                    <select name="role" class="form-control">
-                                        <option value=''></option>
-                                    </select>
-                                </div>
                                 <button type="submit" name="login" class="btn btn-primary btn-block">
                                     Login
                                 </button>
@@ -63,12 +39,6 @@
         </div>
 
     </div>
-
-
-    <?php
-    include_once "./layouts/include_js.php";
-    ?>
-
-</body>
-
-</html>
+<?php
+    require_once './layouts/footer.php';
+?>

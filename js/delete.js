@@ -60,7 +60,6 @@ $(document).ready(function(){
         if(message){
             let td=$(this).closest('td');
             let id = td.attr('id');
-            //console.log(id);
             $.ajax({
                 type: "post",
                 url: "delete_reception",
