@@ -14,26 +14,35 @@ $total_doctors = count($doctorController->getDoctors());
 $medicineController = new MedicineController();
 $total_medicines = count($medicineController->getMedicine());
 
+if(!$auth->isAuth()){
+    header('location:login_form.php');
+}
+
+if($auth->hasRole() == 'doctor'){
+    header('location:patient.php');
+}
 ?>
 
 <div class="container-fluid mt-2 p-4">
     <div class="row">
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card bg-danger text-white shadow-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="fs-6 text-center">
-                                Patients
+            <a href="all_patients">
+                <div class="card bg-danger text-white shadow-3">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="fs-6 text-center">
+                                    Patients
+                                </div>
+                                <div class="fs-6 font-weight-bold text-center"><?php echo $total_patients;?></div>
                             </div>
-                            <div class="fs-6 font-weight-bold text-center"><?php echo $total_patients;?></div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                            <div class="col-auto">
+                                <i class="fas fa-users fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
 
         <div class="col-xl-3 col-md-6 mb-4">
