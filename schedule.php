@@ -1,6 +1,5 @@
 <?php
 
-    session_start();
     include_once './layouts/header.php';
     require_once './controllers/DoctorController.php';
     require_once './controllers/ScheduleController.php';
