@@ -1,3 +1,19 @@
+<?php 
+
+ob_start();
+session_start();
+
+require_once './controllers/auth/AuthController.php';   
+
+$auth = new AuthController();
+
+if(isset($_POST['logout'])){
+    unset($_SESSION['user']);
+    header('location:login_form');
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,7 +21,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Clinic Management System</title>
 
     <link rel="stylesheet" href="css/mdb.min.css">
     <link rel="stylesheet" href="css/main.css">
@@ -35,10 +51,12 @@
             </button>
             <div class="collapse navbar-collapse bg-light" id="navbarNav">
                 <ul class="navbar-nav">
+                    <?php 
+                    if($auth->hasRole() == 'admin'){
+                    ?>
                     <li class="nav-item <?php echo (strpos($page,'index') !== false )? 'active' : '';?>">
                         <a class="nav-link mx-2" aria-current="page" href="index">Dashboard</a>
                     </li>
-
                     <li class="nav-item <?php echo (strpos($page,'patient') !== false )? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="all_patients">Patients</a>
                     </li>
@@ -61,7 +79,41 @@
                     <li class="nav-item">
                         <a class="nav-link mx-2" href="#">Appointments</a>
                     </li>
+
+                    <?php
+                    }
+                    ?>
+
+                    <!-- doctor -->
+                    <?php 
+                        if($auth->hasRole() == 'doctor'){
+                    ?>
+                    <li class="nav-item <?php echo (strpos($page,'patient') !== false )? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="all_patients">Patients</a>
+                    </li>
+                    <?php
+                        }
+                    ?>
                 </ul>
             </div>
+            <!-- Right elements -->
+            <div class="d-flex align-items-center">
+                <!-- Avatar -->
+                <div class="dropdown">
+                    <a class="dropdown-toggle d-flex align-items-center hidden-arrow text-dark" href="#"
+                        id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+                        <small><?php echo $auth->getName();?></small>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
+                        <li>
+                            <form action="" method="post">
+                                <button type="submit" class="dropdown-item" name="logout">Logout</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Right elements -->
+        </div>
         </div>
     </nav>
