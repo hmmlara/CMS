@@ -69,11 +69,14 @@
     }
 ?>
 
-<div class="container-fluid mt-5">
+<div class="<?php echo ($auth->hasRole() == 'doctor')? 'container': 'container-fluid';?> mt-5">
     <div class="row">
-        <div class="col-8">
+        <div class="<?php echo ($auth->hasRole() == 'doctor')? 'col-12' : 'col-8';?>">
             <div id="calendar"></div>
         </div>
+        <?php 
+            if($auth->hasRole() != 'doctor'){
+        ?>
         <div class="col-4">
             <div class="card p-3">
                 <div class="card-title text-center">
@@ -156,8 +159,14 @@
                 </div>
             </div>
         </div>
+        <?php 
+            }
+        ?>
     </div>
 
+    <?php 
+        if($auth->hasRole() != 'doctor'){ 
+    ?>
     <!-- Event Details Modal -->
     <div class="modal fade" id="event_details_modal">
         <div class="modal-dialog modal-dialog-centered">
@@ -191,6 +200,10 @@
             </div>
         </div>
     </div>
+
+    <?php 
+        }
+    ?>
 
 
     <script>

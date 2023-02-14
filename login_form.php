@@ -15,7 +15,7 @@
                 header('location:index.php');
             }
             else if($auth->hasRole() == 'doctor'){
-                header('location:all_patients.php');
+                header('location:schedule.php');
             }
         }
     }

@@ -1,8 +1,15 @@
 <?php
 
-ob_start();
-
 include_once "./layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor' || $auth->hasRole() == 'reception'){
+    header('location:_403');
+}
+
 include_once "./controllers/DoctorController.php";
 
 $doctorController=new DoctorController();
@@ -30,7 +37,7 @@ if(isset($_GET["id"])){
     <div class="row">
         <div class="col-md-12 mb-3">
             <h4>Doctor Info</h4>
-            <a href="all_doctors.php" class="btn btn-primary">Back</a>
+            <a href="all_doctors.php" class="btn btn-success"><i class="fas fa-arrow-left"></i></a>
         </div>
 
         <div class="col-md-12">

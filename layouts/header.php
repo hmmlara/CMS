@@ -86,8 +86,8 @@ if(isset($_POST['logout'])){
                     <?php 
                         if($auth->hasRole() == 'doctor'){
                     ?>
-                    <li class="nav-item <?php echo (strpos($page,'patient') !== false )? 'active' : ''; ?>">
-                        <a class="nav-link mx-2" href="all_patients">Patients</a>
+                    <li class="nav-item <?php echo (strpos($page,'schedule') !== false )? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="schedule">Schedules</a>
                     </li>
                     <?php
                         }

@@ -1,6 +1,15 @@
 <?php
-ob_start();
+
 include_once "layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor' || $auth->hasRole() == 'reception'){
+    header('location:_403');
+}
+
 include_once "controllers/DoctorController.php";
 require_once "core/Request.php";
 require_once "core/Validator.php";
@@ -97,7 +106,7 @@ if (isset($_POST["add"])) {
 
 <div class="container">
     <h5>Doctor Edit</h5>
-    <a href="all_doctors.php" class="btn btn-primary">Back</a>
+    <a href="all_doctors.php" class="btn btn-success"><i class="fas fa-arrow-left"></i></a>
 
     <form action="" method="post" enctype="multipart/form-data">
         <input type="text" name="user_id" value="<?php echo $_GET["id"]; ?>" hidden>
