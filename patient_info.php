@@ -1,6 +1,15 @@
 <?php
 
 include_once "./layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor'){
+    header('location:_403');
+}
+
 require_once "./controllers/PatientController.php";
 
 $patientController = new PatientController();
@@ -18,7 +27,7 @@ if (isset($_GET["id"])) {
 
 <div class="container-fluid mt-3">
     <h5>Patient Information</h5>
-    <a href="all_patients" class="btn btn-sm btn-dark"><i class="fas fa-arrow-left"></i></a>
+    <a href="all_patients" class="btn btn-sm btn-success"><i class="fas fa-arrow-left"></i></a>
     <div class="row mt-3">
         <div class="col-4">
             <div class="card py-2">

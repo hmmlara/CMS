@@ -1,5 +1,14 @@
 <?php
 include_once "./layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor' || $auth->hasRole() == 'reception'){
+    header('location:_403');
+}
+
 include_once "./controllers/DoctorController.php";
 require_once "./core/libraray.php";
 
@@ -18,14 +27,14 @@ if(isset($_POST["search"])){
     <div class="row">
         <div class="col-8">
             <h4 class="mb-4">Doctor Lists</h4>
-            <a href="add_doctor.php" class="btn btn-sm btn-dark" id="add">Add</a>
+            <a href="add_doctor.php" class="btn btn-sm btn-success" id="add">Add</a>
         </div>
         <div class="col-4 mb-3">
             <form action="" method="post">
                 <div class="form-group d-flex float-right mb-3">
                     <span class="mt-2">Search:&nbsp;</span>
                     <input type="text" name="search_val" id="" class="form-control w-50 mx-3" placeholder="Enter Doctor Code">
-                    <button type="submit" name="search" class="btn btn-sm btn-dark">Search</button>
+                    <button type="submit" name="search" class="btn btn-sm btn-success">Search</button>
                 </div>
             </form>
 
