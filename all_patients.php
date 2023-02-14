@@ -2,6 +2,15 @@
 
 include_once "./layouts/header.php";
 
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor'){
+    header('location:_403');
+}
+
+// after auth
 require_once "./controllers/PatientController.php";
 require_once "./core/libraray.php";
 require_once "./core/Paginator.php";
@@ -37,7 +46,7 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
     <div class="row">
         <div class="col-8">
             <h5 class="mb-4">Patients</h5>
-            <a href="add_patient" class="btn btn-sm btn-dark" id="add">Add</a>
+            <a href="add_patient" class="btn btn-sm btn-success" id="add">Add</a>
         </div>
         <div class="col-4 mb-3">
             <form action="" method="post">
@@ -45,7 +54,7 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
                     <span class="mt-2">Search:&nbsp;</span>
                     <input type="text" name="search_val" id="" class="form-control w-50 mx-3"
                         placeholder="Enter Patient Code">
-                    <button type="submit" name="search" class="btn btn-sm btn-dark">Search</button>
+                    <button type="submit" name="search" class="btn btn-sm btn-success">Search</button>
                 </div>
             </form>
 

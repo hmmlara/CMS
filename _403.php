@@ -1,3 +1,11 @@
+<?php 
+
+require_once './core/Response.php';
+
+$response = new Response();
+
+$response->setStatusCode(403);
+?>
 <!DOCTYPE html>
 <html lang="en">
 

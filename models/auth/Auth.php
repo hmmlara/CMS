@@ -53,4 +53,17 @@ class Auth
 
         $statement->execute();
     }
+    public function getToken($id){
+        $this->pdo = Database::connect();
+
+        $query = 'select token from users where id = :id';
+
+        $statement = $this->pdo->prepare($query);
+
+        $statement->bindParam(":id",$id);
+
+        $statement->execute();
+
+        return $statement->fetch(PDO::FETCH_ASSOC)['token'];
+    }
 }
