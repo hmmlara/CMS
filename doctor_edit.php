@@ -114,6 +114,7 @@ if (isset($_POST["add"])) {
             <div class="card-title p-3">
                 <h3>Doctor Information</h3>
             </div>
+            <img src="uploads/<?php echo $doctors["img"] ?>" alt="" srcset="" style="width: 300px;height: 300px;" id="img" class="img-thumbnail mx-auto">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -150,13 +151,13 @@ if (isset($_POST["add"])) {
                             <?php
                                     if(!isset($data["img"])){
                                 ?>
-                            <input type="file" name="img" id="" class="form-control"
-                                value=" <?php echo $doctors['img'];  ?>">
+                            <input type="file" name="img" id="input" class="form-control"
+                                value=" <?php echo $doctors['img'];  ?>" onchange="file_changed()">
 
                             <?php
                                     }else{
                                 ?>
-                            <input type="file" name="img" id=" "
+                            <input type="file" name="img" id="input"
                                 class="<?php echo (isset($error_msg['img']))? "form-control border broder-danger" : "form-control";  ?>"
                                 value="<?php echo (!empty($data["img"]))? $data["img"] :' ';  ?>">
 
