@@ -1,27 +1,44 @@
 <?php
+
    include_once './layouts/header.php';
-   require_once './controllers/DoctorController.php';
    require_once './controllers/ScheduleController.php';
    require_once './controllers/AppointmentController.php';
+   require_once './controllers/PatientController.php';
    require_once './core/Request.php';
    require_once './core/Validator.php';
    require_once './core/libraray.php';
 
-   $doctorController = new DoctorController();
-   $doctors  = $doctorController->getDoctors();
-
    $scheduleController = new ScheduleController();
    $schedules = $scheduleController->getAll();
 
-   $appointmentController=new AppointmentController();
-   $appointments=$appointmentController->times();
-   
+   $patientController = new PatientController();
+   $patients = $patientController->getPatients();
 
-    $spec_sch = array_values(array_filter($schedules,function($value){
-        if($value['user_id']==3){
-            return $value;
-        }
-    }));
+   $appointmentController=new AppointmentController();
+   $appointments = $appointmentController->getAppointments(date('Y-m-d'));
+
+   foreach(range(1,count($appointments)) as $key){
+        $appointments[$key - 1] += ["display_id" => $key];
+   }
+
+
+   $today_docs = array_values(array_filter($schedules,function($value){
+        return $value["shift_day"] == date('Y-m-d');
+   }));
+
+   $arr = [];
+
+   foreach($today_docs as $tod){
+        $data = [
+            'user_id' => $tod["user_id"],
+            'name' => $tod["name"],
+        ];
+        array_push($arr,$data);
+   }
+
+   // for remove duplicate data value
+   $result = array_unique($arr,SORT_REGULAR);
+
 
   $error_msg = [];
   if(isset($_POST['add'])){
@@ -42,15 +59,29 @@
     } else {
         // clear error messages if validated is true
         $error_msg = [];
+
+        $data['appointment_date'] = date('Y-m-d');
+        $result = $appointmentController->add($data);
+
+        if($result){
+            header('location:'.$_SERVER["PHP_SELF"]);
+        }
     }
   }
  
+  if(isset($_GET['id'])){
+        $result = $appointmentController->delete($_GET["id"]);
+
+        if($result){
+            header('location:'.$_SERVER["PHP_SELF"]);
+        }
+  }
 ?>
 
 
 <div class="container-fluid mt-4">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <!-- Tabs navs -->
             <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -77,7 +108,25 @@
                                     <div class="col-12">
                                         <div class="form-group mb-3">
                                             <label for="" class="form-label">Patient Code</label>
-                                            <input type="text" name="" id="" class="form-control">
+                                            <select name="pr_id" id=""
+                                                class="<?php echo (isset($error_msg["pr_id"]))? 'border border-danger form-control': 'form-control'; ?>">
+                                                <option value="0">Choose Patient code</option>
+                                                <?php 
+                                                   foreach($patients as $patient){
+                                                    ?>
+                                                <option value='<?php echo $patient["id"];?>'
+                                                    <?php echo (isset($data["pr_id"]) && $data["patient_id"] == $patient["id"])? 'selected': ''; ?>>
+                                                    <?php echo $patient["pr_code"];?></option>
+                                                <?php
+                                                    }
+                                                    ?>
+
+                                            </select>
+                                            <?php 
+                                                    if(isset($error_msg["pr_id"])){
+                                                        echo "<small class='text-danger'>Select Patient</small>";
+                                                    }
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -87,14 +136,14 @@
                                                     <label for="" class="form-label">Select Doctor</label>
 
                                                     <!-- Doctor Select -->
-                                                    <select name="user_id" id=""
+                                                    <select name="user_id" id="chooseDoc"
                                                         class="<?php echo (isset($error_msg["user_id"]))? 'border border-danger form-control': 'form-control'; ?>">
                                                         <option value="0" hidden selected>Choose Doctor</option>
                                                         <?php 
-                                                    foreach($doctors as $doctor){
+                                                    foreach($result as $doctor){
                                                     ?>
-                                                        <option value='<?php echo $doctor["id"];?>'
-                                                            <?php echo (isset($data["user_id"]) && $data["user_id"] == $doctor["id"])? 'selected': ''; ?>>
+                                                        <option value='<?php echo $doctor["user_id"];?>'
+                                                            <?php echo (!isset($data["user_id"]) && $data["user_id"] == $doctor["user_id"])? 'selected': ''; ?>>
                                                             <?php echo $doctor["name"];?></option>
                                                         <?php
                                                     }
@@ -111,32 +160,18 @@
                                             <div class="col-6">
                                                 <div class="form-group mb-3">
                                                     <label for="" class="form-label">Time</label>
-                                                    <select name="" id="chooseTime" class="<?php echo (isset($error_msg["appointment_date"])) ? "border border-danger form-control" : 'form-control';   ?>">
-                                                        <option value="0" hidden selected>Choose Time</option>
-                                                        <?php
-                                                        foreach($schedules as $schedule ){
-                                                        ?>
-
-                                                        <option value="<?php echo $schedule['id']; ?>">
-                                                            <?php echo format_12hrs($schedule["shift_start"])." - ".format_12hrs($schedule["shift_end"]);?>
-                                                        </option>
-
-                                                        <?php
-                                                            }
-
-                                                        ?>
-                                                        
+                                                    <select name="appointment_time" id="dutyTime"
+                                                        class="<?php echo (isset($error_msg["appointment_time"])) ? "border border-danger form-control" : 'form-control';   ?>">
+                                                        <option value="0" selected hidden>No time to show</option>
                                                     </select>
 
                                                     <!-- select time -->
-
-                                                    
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-success w-100">Make Appointment</button>
+                                <button type="submit" class="btn btn-success w-100" name="add">Make Appointment</button>
                             </form>
 
                         </div>
@@ -171,7 +206,7 @@
                                                         <?php 
                                                     foreach($doctors as $doctor){
                                                     ?>
-                                                        <option value='<?php echo $doctor["id"];?>'
+                                                        <option value='<?php echo $doctor["user_id"];?>'
                                                             <?php echo (isset($data["user_id"]) && $data["user_id"] == $doctor["id"])? 'selected': ''; ?>>
                                                             <?php echo $doctor["name"];?></option>
                                                         <?php
@@ -208,10 +243,10 @@
         </div>
 
 
-        <div class="col-md-8">
+        <div class="col-md-9">
 
-            <table class="table table-border-striped">
-                <thead>
+            <table class="table table-striped text-center">
+                <thead class="bg-dark text-white">
                     <tr>
                         <th>Appointment No</th>
                         <th>Patient Name</th>
@@ -222,7 +257,25 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <?php 
+                        foreach($appointments as $app){
+                    ?>
+                    <tr>
+                        <td><?php echo $app["display_id"];?></td>
+                        <td><?php echo $app["pr_name"];?></td>
+                        <td><?php echo $app["dr_name"];?></td>
+                        <td><?php echo $app["appointment_date"];?></td>
+                        <td><?php echo $app["appointment_time"];?></td>
+                        <td>
 
+                            <a class="btn btn-sm btn-info mx-2"><i
+                                    class="fas fa-check"></i></a>
+                            <a href="<?php echo $_SERVER["PHP_SELF"]."?id=".$app["id"];?>" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
+                        </td>
+                    </tr>
+                    <?php
+                        }
+                    ?>
                 </tbody>
             </table>
 
@@ -230,8 +283,7 @@
     </div>
 </div>
 <script>
-
-    var duty_time = $.parseJSON('<?= json_encode($schedules); ?>')
+var duty_time = $.parseJSON('<?= json_encode($today_docs); ?>')
 </script>
 
 

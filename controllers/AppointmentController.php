@@ -5,15 +5,18 @@
     class AppointmentController extends Appointment{
 
         //add appointment
-        // public function add($data){
-        //     $result=$this->addData($data);
-        //     return $result;
-        // }
+        public function add($data){
+            return $this->addData($data);
+        }
             
-        //get app_time
-        public function times(){
-            $result=$this->getTimes();
-            return $result;
+        //get appoint_times
+        public function getAppointments($date){
+            return $this->getAppoints($date);
+        }
+
+        // delete appoint
+        public function delete($id){
+            return $this->delAppoint($id);
         }
     }
 ?>

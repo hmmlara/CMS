@@ -28,4 +28,9 @@ class ScheduleController extends Schedule
             return false;
         }
     }
+
+    // get schedule by user id
+    public function getSpecificSchedule($user_id){
+        return $this->getById($user_id);
+    }
 }
