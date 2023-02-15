@@ -34,6 +34,13 @@ function format_24($time){
 
 }
 
+// change 24 hours to 12 hours format
+function format_12hrs($time){
+    $datetime = new DateTime($time);
+
+    return $datetime->format('h:i a');
+}
+
 // reduce function for only number associative array
 function reduce_for_assoc_num_arr($array){
     $result = 0;
