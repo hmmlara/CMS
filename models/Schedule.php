@@ -89,4 +89,17 @@ class Schedule
 
         return $statement->execute();
     }
+
+    protected function getById($id){
+        $this->pdo = Database::connect();
+
+        $query = "select * from schedules where user_id = :user_id";
+
+        $statement = $this->pdo->prepare($query);
+
+        $statement->bindParam(":user_id",$id);
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
