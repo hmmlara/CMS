@@ -15,8 +15,14 @@
                 header('location:index.php');
             }
             else if($auth->hasRole() == 'doctor'){
-                header('location:schedule.php');
+                header('location:add_appointment.php');
             }
+            else if($auth->hasRole() == 'reception'){
+                header('location:add_appointment');
+            }
+        }
+        else{
+            echo '<script>aler("invalid user");</script>';
         }
     }
 ?>
