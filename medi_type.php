@@ -1,7 +1,15 @@
 <?php
 
-ob_start();
 require_once "layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor' || $auth->hasRole() == 'reception'){
+    header('location:_403');
+}
+
 
 require_once "controllers/MediTypeController.php";
 require_once "./core/Request.php";
