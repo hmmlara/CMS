@@ -118,7 +118,7 @@
                                                    foreach($patients as $patient){
                                                     ?>
                                                 <option value='<?php echo $patient["id"];?>'
-                                                    <?php echo (isset($data["pr_id"]) && $data["patient_id"] == $patient["id"])? 'selected': ''; ?>>
+                                                    <?php echo (isset($data["pr_id"]) && $data["pr_id"] == $patient["id"])? 'selected': ''; ?>>
                                                     <?php echo $patient["pr_code"];?></option>
                                                 <?php
                                                     }
