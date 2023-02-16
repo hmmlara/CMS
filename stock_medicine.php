@@ -1,6 +1,14 @@
 <?php
 
-require_once __DIR__."./layouts/header.php";
+require_once "./layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor'){
+    header('location:_403');
+}
 
 require_once "./controllers/MedicineController.php";
 
