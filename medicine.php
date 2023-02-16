@@ -2,6 +2,15 @@
 
 require_once "./layouts/header.php";
 
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor'){
+    header('location:_403');
+}
+
+
 require_once "./controllers/MedicineController.php";
 
 require_once "./core/Validator.php";
@@ -48,7 +57,7 @@ if(isset($_POST["search"])){
                 <a href="add_medicines.php" class="btn btn-sm btn-dark mx-2" id="add">Add Medicine</a>
                 <a href="medi_type.php" class="btn btn-sm btn-dark mx-2" id="add">Medi_type</a>
                 <a href="medi_category.php" class="btn btn-sm btn-dark mx-2" id="add">Category</a>
-                <a href="stock_medicine.php" class="btn btn-sm btn-dark mx-2" id="add">Medicine Stocks</a>
+                <a href="stock_medincine.php" class="btn btn-sm btn-dark mx-2" id="add">Medicine Stocks</a>
             </div>
         </div>
         <hr class="hr-blurry">
