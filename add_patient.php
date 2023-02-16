@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
 
 <div class="container mt-3">
     <h5>Add New Patient</h5>
-    <a href="all_patients" class="btn btn-sm btn-dark mb-3"><i class="fas fa-arrow-left"></i></a>
+    <a href="all_patients" class="btn btn-sm btn-success mb-3"><i class="fas fa-arrow-left"></i></a>
 
     <div class="card shadow-3">
         <div class="card-body">
@@ -163,7 +163,7 @@ if (isset($_POST["add"])) {
                         </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-dark w-100" name="add">Add Patient</button>
+                <button type="submit" class="btn btn-success w-100" name="add">Add Patient</button>
             </form>
         </div>
     </div>

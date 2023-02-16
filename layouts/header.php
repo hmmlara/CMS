@@ -1,13 +1,13 @@
-<?php 
+<?php
 
 ob_start();
 session_start();
 
-require_once './controllers/auth/AuthController.php';   
+require_once './controllers/auth/AuthController.php';
 
 $auth = new AuthController();
 
-if(isset($_POST['logout'])){
+if (isset($_POST['logout'])) {
     $auth->logout();
 }
 ?>
@@ -35,12 +35,12 @@ if(isset($_POST['logout'])){
 </head>
 
 <body>
-    <?php 
-        // for active ui
-        $page = explode('.php',$_SERVER["PHP_SELF"])[0];
-    ?>
+    <?php
+// for active ui
+$page = explode('.php', $_SERVER["PHP_SELF"])[0];
+?>
     <!-- navbar start -->
-    <nav class="navbar navbar-expand-lg bg-light <?php echo (strpos($page,'login') !== false)? 'd-none': '';?>">
+    <nav class="navbar navbar-expand-lg bg-light <?php echo (strpos($page, 'login') !== false) ? 'd-none' : ''; ?>">
         <div class="container-fluid">
             <a class="navbar-brand text-dark" href="index.php">CMS</a>
             <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarNav"
@@ -49,32 +49,32 @@ if(isset($_POST['logout'])){
             </button>
             <div class="collapse navbar-collapse bg-light" id="navbarNav">
                 <ul class="navbar-nav">
-                    <?php 
-                    if($auth->hasRole() == 'admin'){
-                    ?>
-                    <li class="nav-item <?php echo (strpos($page,'index') !== false )? 'active' : '';?>">
+                    <?php
+                        if ($auth->hasRole() == 'admin') {
+                            ?>
+                    <li class="nav-item <?php echo (strpos($page, 'index') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" aria-current="page" href="index">Dashboard</a>
                     </li>
-                    <li class="nav-item <?php echo (strpos($page,'patient') !== false )? 'active' : ''; ?>">
+                    <li class="nav-item <?php echo (strpos($page, 'patient') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="all_patients">Patients</a>
                     </li>
 
-                    <li class="nav-item <?php echo (strpos($page,'doctor') !== false )? 'active' : '';?>">
+                    <li class="nav-item <?php echo (strpos($page, 'doctor') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="all_doctors">Doctors</a>
                     </li>
 
-                    <li class="nav-item <?php echo (strpos($page,'reception') !== false )? 'active' : '';?>">
+                    <li class="nav-item <?php echo (strpos($page, 'reception') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="all_receptionists">Receptionists</a>
                     </li>
-                    <li class="nav-item <?php echo (strpos($page,'medi') !== false )? 'active' : '';?>">
+                    <li class="nav-item <?php echo (strpos($page, 'medi') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="medicine">Medicines</a>
                     </li>
 
-                    <li class="nav-item <?php echo (strpos($page,'sche') !== false )? 'active' : '';?>">
+                    <li class="nav-item <?php echo (strpos($page, 'sche') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="schedule">Schedules</a>
                     </li>
 
-                    <li class="nav-item <?php echo (strpos($page,'appoint') !== false)? 'active' : ''; ?>">
+                    <li class="nav-item <?php echo (strpos($page, 'appoint') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="add_appointment">Appointments</a>
                     </li>
 
@@ -83,15 +83,37 @@ if(isset($_POST['logout'])){
                     ?>
 
                     <!-- doctor -->
-                    <?php 
-                        if($auth->hasRole() == 'doctor'){
+                    <?php
+                        if ($auth->hasRole() == 'doctor') {
                     ?>
-                    <li class="nav-item <?php echo (strpos($page,'schedule') !== false )? 'active' : ''; ?>">
+                    <li class="nav-item <?php echo (strpos($page, 'appoint') !== false) ? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="add_appointment">Appointments</a>
+                    </li>
+                    <li class="nav-item <?php echo (strpos($page, 'schedule') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="schedule">Schedules</a>
                     </li>
                     <?php
                         }
                     ?>
+
+                    <!-- reception -->
+                    <?php 
+                        if($auth->hasRole() == 'reception')
+                        {
+                    ?>
+                    <li class="nav-item <?php echo (strpos($page, 'appoint') !== false) ? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="add_appointment">Appointments</a>
+                    </li>
+                    <li class="nav-item <?php echo (strpos($page, 'patient') !== false) ? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="all_patients">Patients</a>
+                    </li>
+                    <li class="nav-item <?php echo (strpos($page, 'schedule') !== false) ? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="schedule">Schedules</a>
+                    </li>
+                    <?php 
+                        }
+                    ?>
+                    <!-- reception -->
                 </ul>
             </div>
             <!-- Right elements -->
@@ -100,7 +122,7 @@ if(isset($_POST['logout'])){
                 <div class="dropdown">
                     <a class="dropdown-toggle d-flex align-items-center hidden-arrow text-dark" href="#"
                         id="navbarDropdownMenuAvatar" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                        <small><?php echo $auth->getName();?></small>
+                        <small><?php echo $auth->getName(); ?></small>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuAvatar">
                         <li>

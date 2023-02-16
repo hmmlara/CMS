@@ -79,12 +79,41 @@
             header('location:'.$_SERVER["PHP_SELF"]);
         }
   }
+
+  if(isset($_POST['updateStatus'])){
+    //  0 is start line, 1 is complete, status 2 is pending, 3 is cancel
+    $result = $appointmentController->update($_POST["appointment_id"],2);
+
+    if($result){
+        header('location:add_appointment');
+    }
+}
+
+if($auth->hasRole() == 'reception'){
+    // filter for reception
+    $appointments = array_values(array_filter($appointments,function($value){
+        return $value["status"] == 0;
+    }));
+}
+
+
+if($auth->hasRole() == 'doctor'){
+    // filter for reception
+    $appointments = array_values(array_filter($appointments,function($value){
+        if($value["status"] == 2 && $value["user_id"] == $_SESSION["user"]["id"])
+            return $value;
+    }));
+}
 ?>
 
 
 <div class="container-fluid mt-4">
+    <h3 class="mb-5 mt-3 text-center">Today's date: <?php echo date_format(date_create(date('Y-m-d')),'d/m/Y');?></h3>
     <div class="row">
-        <div class="col-md-3">
+        <?php 
+            if($auth->hasRole() != 'doctor'){
+        ?>
+        <div class="col-md-4">
             <!-- Tabs navs -->
             <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
                 <li class="nav-item" role="presentation">
@@ -242,11 +271,13 @@
                 </div>
             </div>
             <!-- Tabs content -->
-
         </div>
 
+        <?php
+            }
+        ?>
 
-        <div class="col-md-9">
+        <div class="<?php echo ($auth->hasRole() == 'doctor')? 'col-md-12' : 'col-md-8';?>">
 
             <table class="table table-striped text-center">
                 <thead class="bg-dark text-white">
@@ -254,7 +285,6 @@
                         <th>Appointment No</th>
                         <th>Patient Name</th>
                         <th>Doctor Name</th>
-                        <th>Appointment Date</th>
                         <th>Time</th>
                         <th>Action</th>
                     </tr>
@@ -267,14 +297,36 @@
                         <td><?php echo $app["display_id"];?></td>
                         <td><?php echo $app["pr_name"];?></td>
                         <td><?php echo $app["dr_name"];?></td>
-                        <td><?php echo $app["appointment_date"];?></td>
                         <td><?php echo $app["appointment_time"];?></td>
+                        <?php
+                            if($auth->hasRole() == 'reception'){
+                        ?>
                         <td>
 
-                            <a class="btn btn-sm btn-info mx-2"><i class="fas fa-check"></i></a>
+                            <form action="" method="post" class="d-inline">
+                                <input type="text" name="appointment_id" hidden value="<?php echo $app["id"];?>">
+                                <button type='submit' name='updateStatus' class="btn btn-sm btn-info mx-2"><i
+                                        class="fas fa-check"></i></button>
+                            </form>
                             <a href="<?php echo $_SERVER["PHP_SELF"]."?id=".$app["id"];?>"
                                 class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
                         </td>
+                        <?php
+                            }
+                        ?>
+                        <!-- for doctor -->
+                        <?php 
+                            if($auth->hasRole() == 'doctor')
+                            {
+                        ?>
+                            <td>
+                                <a href="appointment_prescription" class="btn btn-sm btn-info">Start</a>
+                            </td>
+                        <?php
+                            } 
+                        ?>
+
+                        <!-- for doctor -->
                     </tr>
                     <?php
                         }

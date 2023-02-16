@@ -13,7 +13,7 @@ class Appointment{
         $query = 'select appointments.*,patients.pr_code as pr_name,user_infos.name as dr_name
                 from appointments join patients on patients.id = appointments.pr_id
                 join user_infos on user_infos.user_id = appointments.user_id
-                where appointments.appointment_date = :date and status = 0';
+                where appointments.appointment_date = :date';
         
         $statement = $this->pdo->prepare($query);
 
@@ -41,6 +41,20 @@ class Appointment{
         foreach($data as $key => $value){
             $statement->bindParam(":$key", $data[$key]);
         }
+
+        return $statement->execute();
+    }
+    // update status
+    protected function updateStatus($id,$status_code){
+        $this->pdo = Database::connect();
+
+        $query = "update appointments set status = :status,updated_at = :updated_at where id = :id";
+
+        $statement = $this->pdo->prepare($query);
+
+        $statement->bindParam(":status",$status_code);
+        $statement->bindParam(":updated_at",date('Y-m-d'));
+        $statement->bindParam(":id",$id);
 
         return $statement->execute();
     }
