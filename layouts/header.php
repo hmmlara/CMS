@@ -74,8 +74,8 @@ if(isset($_POST['logout'])){
                         <a class="nav-link mx-2" href="schedule">Schedules</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link mx-2" href="#">Appointments</a>
+                    <li class="nav-item <?php echo (strpos($page,'appoint') !== false)? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="add_appointment">Appointments</a>
                     </li>
 
                     <?php
