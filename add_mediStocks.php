@@ -1,6 +1,15 @@
 <?php
-ob_start();
-require_once __DIR__ . "./layouts/header.php";
+
+require_once "./layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor'){
+    header('location:_403');
+}
+
 
 require_once "./controllers/MedicineController.php";
 require_once "./core/Request.php";
@@ -44,7 +53,7 @@ if (isset($_POST["add"])) {
         <div class="col-11 d-flex justify-content-between  mb-3">
         </div>
         <div class="col-1 me">
-           <a href="stock_medicine.php" class="text-dark text-decoration-underline">Back</a>
+           <a href="medicine.php" class="text-dark text-decoration-underline">Back</a>
         </div>
     </div>
    <hr class="hr-blurry">
