@@ -59,10 +59,6 @@
     // for error messages
     if (!$validator->validated()) {
         $error_msg = $validator->getErrorMessages();
-
-        echo '<pre>';
-        var_dump($data);
-        echo '</pre>';
     } else {
         // clear error messages if validated is true
         $error_msg = [];
