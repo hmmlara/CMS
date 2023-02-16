@@ -17,8 +17,11 @@
    $appointmentController=new AppointmentController();
    $appointments = $appointmentController->getAppointments(date('Y-m-d'));
 
-   foreach(range(1,count($appointments)) as $key){
-        $appointments[$key - 1] += ["display_id" => $key];
+   // check null of an array
+   if(count($appointments) > 0){
+        foreach(range(1,count($appointments)) as $key){
+            $appointments[$key - 1] += ["display_id" => $key];
+        }
    }
 
 
@@ -268,9 +271,9 @@
                         <td><?php echo $app["appointment_time"];?></td>
                         <td>
 
-                            <a class="btn btn-sm btn-info mx-2"><i
-                                    class="fas fa-check"></i></a>
-                            <a href="<?php echo $_SERVER["PHP_SELF"]."?id=".$app["id"];?>" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
+                            <a class="btn btn-sm btn-info mx-2"><i class="fas fa-check"></i></a>
+                            <a href="<?php echo $_SERVER["PHP_SELF"]."?id=".$app["id"];?>"
+                                class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
                         </td>
                     </tr>
                     <?php
