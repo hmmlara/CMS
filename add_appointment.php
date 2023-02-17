@@ -4,6 +4,7 @@
    require_once './controllers/ScheduleController.php';
    require_once './controllers/AppointmentController.php';
    require_once './controllers/PatientController.php';
+   require_once './controllers/DoctorController.php';
    require_once './core/Request.php';
    require_once './core/Validator.php';
    require_once './core/libraray.php';
@@ -16,6 +17,9 @@
 
    $appointmentController=new AppointmentController();
    $appointments = $appointmentController->getAppointments(date('Y-m-d'));
+
+   $doctorController=new DoctorController();
+   $doctors=$doctorController->getDoctors();
 
    // check null of an array
    if(count($appointments) > 0){
@@ -43,8 +47,8 @@
    $result = array_unique($arr,SORT_REGULAR);
 
 
-  $error_msg = [];
-  if(isset($_POST['add'])){
+    $error_msg = [];
+    if(isset($_POST['add'])){
 
     $request = new Request();
 
@@ -120,10 +124,7 @@ if($auth->hasRole() == 'doctor'){
                     <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab"
                         aria-controls="ex1-tabs-1" aria-selected="true">Today's</a>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2" role="tab"
-                        aria-controls="ex1-tabs-2" aria-selected="false">Other's Appointment</a>
-                </li>
+                <!-- s -->
             </ul>
             <!-- Tabs navs -->
 
@@ -219,10 +220,35 @@ if($auth->hasRole() == 'doctor'){
                         <div class="card-body">
                             <form action="" method="post">
                                 <div class="row">
+                                    <div class="col-12 d-flex justify-content-end mb-3">
+                                        <label for="" class="form-label mx-2"> Date</label>
+                                        <input type="date" name="appointment_date" id=""
+                                            class="<?php echo (isset($error_msg["appointment_date"]))? "border border-danger" : ''; ?>"
+                                            value="<?php echo (isset($data["appointment_date"]))? $data["appointment_date"]: '';?>">
+                                    </div>
                                     <div class="col-12">
+
                                         <div class="form-group mb-3">
                                             <label for="" class="form-label">Patient Code</label>
-                                            <input type="text" name="" id="" class="form-control">
+                                            <select name="pr_id" id=""
+                                                class="<?php echo (isset($error_msg["pr_id"]))? 'border border-danger form-control': 'form-control'; ?>">
+                                                <option value="0">Choose Patient code</option>
+                                                <?php 
+                                                    foreach($patients as $patient){
+                                                        ?>
+                                                <option value='<?php echo $patient["id"];?>'
+                                                    <?php echo (isset($data["pr_id"]) && $data["pr_id"] == $patient["id"])? 'selected': ''; ?>>
+                                                    <?php echo $patient["pr_code"];?></option>
+                                                <?php
+                                                        }
+                                                        ?>
+
+                                            </select>
+                                            <?php 
+                                                        if(isset($error_msg["pr_id"])){
+                                                            echo "<small class='text-danger'>Select Patient</small>";
+                                                        }
+                                                ?>
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -232,32 +258,36 @@ if($auth->hasRole() == 'doctor'){
                                                     <label for="" class="form-label">Select Doctor</label>
 
                                                     <!-- Doctor Select -->
-                                                    <select name="user_id" id=""
+                                                    <select name="user_id" id="chooseDoc"
                                                         class="<?php echo (isset($error_msg["user_id"]))? 'border border-danger form-control': 'form-control'; ?>">
                                                         <option value="0" hidden selected>Choose Doctor</option>
                                                         <?php 
-                                                    foreach($doctors as $doctor){
-                                                    ?>
+                                                                foreach($doctors as $doctor){
+                                                            ?>
                                                         <option value='<?php echo $doctor["user_id"];?>'
-                                                            <?php echo (isset($data["user_id"]) && $data["user_id"] == $doctor["id"])? 'selected': ''; ?>>
+                                                            <?php echo (!isset($data["user_id"]) && $data["user_id"] == $doctor["user_id"])? 'selected': ''; ?>>
                                                             <?php echo $doctor["name"];?></option>
                                                         <?php
-                                                    }
-                                                    ?>
+                                                                }
+                                                            ?>
                                                     </select>
                                                     <?php 
-                                                    if(isset($error_msg["user_id"])){
-                                                        echo "<small class='text-danger'>Select Doctor</small>";
-                                                    }
-                                                ?>
-
-                                                    <!-- Select Schedule Time  -->
+                                                        if(isset($error_msg["user_id"])){
+                                                            echo "<small class='text-danger'>Select Doctor</small>";
+                                                        }
+                                                        ?>
 
                                                 </div>
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Duty time</label>
+                                                    <label for="" class="form-label">Time</label>
+                                                    <select name="appointment_time" id="dutyTime"
+                                                        class="<?php echo (isset($error_msg["appointment_time"])) ? "border border-danger form-control" : 'form-control';   ?>">
+                                                        <option value="0" selected hidden>No time to show</option>
+                                                    </select>
+
+                                                    <!-- select time -->
                                                 </div>
                                             </div>
                                         </div>
@@ -279,60 +309,98 @@ if($auth->hasRole() == 'doctor'){
 
         <div class="<?php echo ($auth->hasRole() == 'doctor')? 'col-md-12' : 'col-md-8';?>">
 
-            <table class="table table-striped text-center">
-                <thead class="bg-dark text-white">
-                    <tr>
-                        <th>Appointment No</th>
-                        <th>Patient Name</th>
-                        <th>Doctor Name</th>
-                        <th>Time</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-                        foreach($appointments as $app){
-                    ?>
-                    <tr>
-                        <td><?php echo $app["display_id"];?></td>
-                        <td><?php echo $app["pr_name"];?></td>
-                        <td><?php echo $app["dr_name"];?></td>
-                        <td><?php echo $app["appointment_time"];?></td>
-                        <?php
-                            if($auth->hasRole() == 'reception'){
-                        ?>
-                        <td>
+            <!-- Tab for Pre/Today/Next -->
+                <!-- Tabs navs -->
+                <ul class="nav nav-tabs nav-fill mb-3" id="ex1" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link " id="ex2-tab-1" data-mdb-toggle="tab" href="#ex2-tabs-1" role="tab"
+                            aria-controls="ex2-tabs-1" aria-selected="true">Previous</a>
+                    </li>
+                    
+                    <li class="nav-item" role="presentation">
+                        <a class="nav-link active" id="ex2-tab-2" data-mdb-toggle="tab" href="#ex2-tabs-2" role="tab"
+                            aria-controls="ex2-tabs-2" aria-selected="false">Today</a>
+                    </li>
+                    <!-- <li class="nav-item" role="presentation">
+                        <a class="nav-link" id="ex2-tab-3" data-mdb-toggle="tab" href="#ex2-tabs-3" role="tab"
+                            aria-controls="ex2-tabs-3" aria-selected="false">Next</a>
+                    </li> -->
+                </ul>
+                 <!-- Tabs navs -->
 
-                            <form action="" method="post" class="d-inline">
-                                <input type="text" name="appointment_id" hidden value="<?php echo $app["id"];?>">
-                                <button type='submit' name='updateStatus' class="btn btn-sm btn-info mx-2"><i
-                                        class="fas fa-check"></i></button>
-                            </form>
-                            <a href="<?php echo $_SERVER["PHP_SELF"]."?id=".$app["id"];?>"
-                                class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
-                        </td>
-                        <?php
+                <!-- Tabs content -->
+                <div class="tab-content" id="ex2-content">
+
+                    <div class="tab-pane fade" id="ex2-tabs-1" role="tabpanel" aria-labelledby="ex2-tab-1">
+                        Tab 1 content
+                    </div>
+
+                    <div class="tab-pane fade show active" id="ex2-tabs-2" role="tabpanel" aria-labelledby="ex2-tab-2">
+                        <table class="table table-striped text-center">
+                            <thead class="bg-dark text-white">
+                                <tr>
+                                    <th>Appointment No</th>
+                                    <th>Patient Name</th>
+                                    <th>Doctor Name</th>
+                                    <th>Time</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                            foreach($appointments as $app){
+                        ?>
+                                <tr>
+                                    <td><?php echo $app["display_id"];?></td>
+                                    <td><?php echo $app["pr_name"];?></td>
+                                    <td><?php echo $app["dr_name"];?></td>
+                                    <td><?php echo $app["appointment_time"];?></td>
+                                    <?php
+                                if($auth->hasRole() == 'reception'){
+                            ?>
+                                    <td>
+
+                                        <form action="" method="post" class="d-inline">
+                                            <input type="text" name="appointment_id" hidden
+                                                value="<?php echo $app["id"];?>">
+                                            <button type='submit' name='updateStatus' class="btn btn-sm btn-info mx-2"><i
+                                                    class="fas fa-check"></i></button>
+                                        </form>
+
+                                        <a href="<?php echo $_SERVER["PHP_SELF"]."?id=".$app["id"];?>"
+                                            class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
+                                    </td>
+                                    <?php
+                                }
+                            ?>
+                                    <!-- for doctor -->
+                                    <?php 
+                                if($auth->hasRole() == 'doctor')
+                                {
+                            ?>
+                                    <td>
+                                        <a href="appointment_prescription" class="btn btn-sm btn-info">Start</a>
+                                    </td>
+                                    <?php
+                                } 
+                            ?>
+
+                                    <!-- for doctor -->
+                                </tr>
+                                <?php
                             }
                         ?>
-                        <!-- for doctor -->
-                        <?php 
-                            if($auth->hasRole() == 'doctor')
-                            {
-                        ?>
-                            <td>
-                                <a href="appointment_prescription" class="btn btn-sm btn-info">Start</a>
-                            </td>
-                        <?php
-                            } 
-                        ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade" id="ex2-tabs-3" role="tabpanel" aria-labelledby="ex2-tab-3">
+                        Tab 3 content
+                    </div>
+                </div>
+                <!-- Tabs content -->
+            <!-- Tab for Pre/Today/Next -->
 
-                        <!-- for doctor -->
-                    </tr>
-                    <?php
-                        }
-                    ?>
-                </tbody>
-            </table>
+
 
         </div>
     </div>
