@@ -8,10 +8,15 @@ class ScheduleController extends Schedule
     public function getAll(){
         return $this->getSchedules();
     }
-    // save schedule
+    // save opt doc schedule
     public function save($data)
     {
         return $this->saveSchedule($data);
+    }
+
+    // save for main doc
+    public function saveMain($data){
+        return $this->saveSchMain($data);
     }
 
     // update schedule
