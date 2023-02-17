@@ -103,174 +103,116 @@ if($auth->hasRole() == 'doctor'){
         if($value["status"] == 2 && $value["user_id"] == $_SESSION["user"]["id"])
             return $value;
     }));
+
+    $_SESSION['patient_info'] = [
+      ''
+    ];
 }
 ?>
 
 
-<div class="container-fluid mt-4">
-    <h3 class="mb-5 mt-3 text-center">Today's date: <?php echo date_format(date_create(date('Y-m-d')),'d/m/Y');?></h3>
+<div class="container-fluid">
+    <h3 class="mt-3 text-center">Today's date: <?php echo date_format(date_create(date('Y-m-d')),'d/m/Y');?></h3>
+    <hr>
     <div class="row">
         <?php 
             if($auth->hasRole() != 'doctor'){
         ?>
         <div class="col-md-4">
-            <!-- Tabs navs -->
-            <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link active" id="ex1-tab-1" data-mdb-toggle="tab" href="#ex1-tabs-1" role="tab"
-                        aria-controls="ex1-tabs-1" aria-selected="true">Today's</a>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link" id="ex1-tab-2" data-mdb-toggle="tab" href="#ex1-tabs-2" role="tab"
-                        aria-controls="ex1-tabs-2" aria-selected="false">Other's Appointment</a>
-                </li>
-            </ul>
-            <!-- Tabs navs -->
 
-            <!-- Tabs content -->
-            <div class="tab-content" id="ex1-content">
-                <div class="tab-pane fade show active" id="ex1-tabs-1" role="tabpanel" aria-labelledby="ex1-tab-1">
-                    <div class="card">
-                        <div class="card-title text-center mt-3">
-                            <h5>Add New Appointment</h5>
-                        </div>
-                        <div class="card-body">
-                            <form action="" method="post">
+            <div class="card">
+                <div class="card-title text-center mt-3">
+                    <h5>Add New Appointment</h5>
+                </div>
+                <div class="card-body">
+                    <form action="" method="post">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="" class="form-label">Patient Code</label>
+                                    <select name="pr_id" id=""
+                                        class="<?php echo (isset($error_msg["pr_id"]))? 'border border-danger form-control': 'form-control'; ?>">
+                                        <option value="0">Choose Patient code</option>
+                                        <?php 
+                                            foreach($patients as $patient){
+                                        ?>
+                                        <option value='<?php echo $patient["id"];?>'
+                                            <?php echo (isset($data["pr_id"]) && $data["pr_id"] == $patient["id"])? 'selected': ''; ?>>
+                                            <?php echo $patient["pr_code"];?></option>
+                                        <?php
+                                            }
+                                        ?>
+
+                                    </select>
+                                    <?php 
+                                        if(isset($error_msg["pr_id"])){
+                                            echo "<small class='text-danger'>Select Patient</small>";
+                                        }
+                                    ?>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group mb-3">
+                                    <label for="" class="form-label">Select Doctor</label>
+
+                                    <!-- Doctor Select -->
+                                    <select name="user_id" id="chooseDoc"
+                                        class="<?php echo (isset($error_msg["user_id"]))? 'border border-danger form-control': 'form-control'; ?>">
+                                        <option value="0" hidden selected>Choose Doctor</option>
+                                        <?php 
+                                            foreach($result as $doctor){
+                                        ?>
+                                        <option value='<?php echo $doctor["user_id"];?>'
+                                            <?php echo (!isset($data["user_id"]) && $data["user_id"] == $doctor["user_id"])? 'selected': ''; ?>>
+                                            <?php echo $doctor["name"];?></option>
+                                        <?php
+                                            }
+                                        ?>
+                                    </select>
+                                    <?php 
+                                        if(isset($error_msg["user_id"])){
+                                            echo "<small class='text-danger'>Select Doctor</small>";
+                                        }
+                                    ?>
+
+                                </div>
+                            </div>
+                            <div class="col-12">
                                 <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-6">
                                         <div class="form-group mb-3">
-                                            <label for="" class="form-label">Patient Code</label>
-                                            <select name="pr_id" id=""
-                                                class="<?php echo (isset($error_msg["pr_id"]))? 'border border-danger form-control': 'form-control'; ?>">
-                                                <option value="0">Choose Patient code</option>
-                                                <?php 
-                                                   foreach($patients as $patient){
-                                                    ?>
-                                                <option value='<?php echo $patient["id"];?>'
-                                                    <?php echo (isset($data["pr_id"]) && $data["pr_id"] == $patient["id"])? 'selected': ''; ?>>
-                                                    <?php echo $patient["pr_code"];?></option>
-                                                <?php
-                                                    }
-                                                    ?>
+                                            <label for="" class="form-label">Date</label>
+                                            <input type="date" name="start_day" id=""
+                                                class="<?php echo (isset($error_msg["sch_day"]))? 'border border-danger form-control' : 'form-control';?>"
+                                                min="09:00"
+                                                value="<?php echo (isset($data["sch_day"]))? $data["sch_day"]: '';?>">
 
-                                            </select>
-                                            <?php 
-                                                    if(isset($error_msg["pr_id"])){
-                                                        echo "<small class='text-danger'>Select Patient</small>";
-                                                    }
+                                            <?php
+                                                if(isset($error_msg["sch_day"])){
+                                                    echo "<small class='text-danger'>Enter Date</small>";
+                                                }
                                             ?>
                                         </div>
                                     </div>
-                                    <div class="col-12">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Select Doctor</label>
-
-                                                    <!-- Doctor Select -->
-                                                    <select name="user_id" id="chooseDoc"
-                                                        class="<?php echo (isset($error_msg["user_id"]))? 'border border-danger form-control': 'form-control'; ?>">
-                                                        <option value="0" hidden selected>Choose Doctor</option>
-                                                        <?php 
-                                                    foreach($result as $doctor){
-                                                    ?>
-                                                        <option value='<?php echo $doctor["user_id"];?>'
-                                                            <?php echo (!isset($data["user_id"]) && $data["user_id"] == $doctor["user_id"])? 'selected': ''; ?>>
-                                                            <?php echo $doctor["name"];?></option>
-                                                        <?php
-                                                    }
-                                                    ?>
-                                                    </select>
-                                                    <?php 
-                                                    if(isset($error_msg["user_id"])){
-                                                        echo "<small class='text-danger'>Select Doctor</small>";
-                                                    }
-                                                    ?>
-
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Time</label>
-                                                    <select name="appointment_time" id="dutyTime"
-                                                        class="<?php echo (isset($error_msg["appointment_time"])) ? "border border-danger form-control" : 'form-control';   ?>">
-                                                        <option value="0" selected hidden>No time to show</option>
-                                                    </select>
-
-                                                    <!-- select time -->
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-success w-100" name="add">Make Appointment</button>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-pane fade" id="ex1-tabs-2" role="tabpanel" aria-labelledby="ex1-tab-2">
-                    <!-- Tab 2 content -->
-                    <div class="card">
-                        <div class="card-title text-center mt-3">
-                            <h5>Add New Appointment</h5>
-                        </div>
-                        <div class="card-body">
-                            <form action="" method="post">
-                                <div class="row">
-                                    <div class="col-12">
+                                    <div class="col-6">
                                         <div class="form-group mb-3">
-                                            <label for="" class="form-label">Patient Code</label>
-                                            <input type="text" name="" id="" class="form-control">
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Select Doctor</label>
+                                            <label for="" class="form-label">Time</label>
+                                            <select name="appointment_time" id="dutyTime"
+                                                class="<?php echo (isset($error_msg["appointment_time"])) ? "border border-danger form-control" : 'form-control';   ?>">
+                                                <option value="0" selected hidden>No time to show</option>
+                                            </select>
 
-                                                    <!-- Doctor Select -->
-                                                    <select name="user_id" id=""
-                                                        class="<?php echo (isset($error_msg["user_id"]))? 'border border-danger form-control': 'form-control'; ?>">
-                                                        <option value="0" hidden selected>Choose Doctor</option>
-                                                        <?php 
-                                                    foreach($doctors as $doctor){
-                                                    ?>
-                                                        <option value='<?php echo $doctor["user_id"];?>'
-                                                            <?php echo (isset($data["user_id"]) && $data["user_id"] == $doctor["id"])? 'selected': ''; ?>>
-                                                            <?php echo $doctor["name"];?></option>
-                                                        <?php
-                                                    }
-                                                    ?>
-                                                    </select>
-                                                    <?php 
-                                                    if(isset($error_msg["user_id"])){
-                                                        echo "<small class='text-danger'>Select Doctor</small>";
-                                                    }
-                                                ?>
-
-                                                    <!-- Select Schedule Time  -->
-
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="" class="form-label">Duty time</label>
-                                                </div>
-                                            </div>
+                                            <!-- select time -->
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-success w-100">Make Appointment</button>
-                            </form>
-
+                            </div>
                         </div>
-                    </div>
+                        <button type="submit" class="btn btn-success w-100" name="add">Make Appointment</button>
+                    </form>
+
                 </div>
             </div>
-            <!-- Tabs content -->
         </div>
 
         <?php
@@ -299,7 +241,7 @@ if($auth->hasRole() == 'doctor'){
                         <td><?php echo $app["dr_name"];?></td>
                         <td><?php echo $app["appointment_time"];?></td>
                         <?php
-                            if($auth->hasRole() == 'reception'){
+                            if($auth->hasRole() == 'reception' || $auth->hasRole() == 'admin'){
                         ?>
                         <td>
 
@@ -319,9 +261,9 @@ if($auth->hasRole() == 'doctor'){
                             if($auth->hasRole() == 'doctor')
                             {
                         ?>
-                            <td>
-                                <a href="appointment_prescription" class="btn btn-sm btn-info">Start</a>
-                            </td>
+                        <td>
+                            <a href="appointment_prescription" class="btn btn-sm btn-info">Start</a>
+                        </td>
                         <?php
                             } 
                         ?>
