@@ -65,7 +65,7 @@ if (isset($_POST["search"])) {
                     <div class="form-group d-flex float-right mb-3">
                         <span class="mt-2">Search:&nbsp;</span>
                         <input type="text" name="search_val" id="" class="form-control w-50 mx-3" placeholder="Enter CategoryName">
-                        <button type="submit" name="search" class="btn btn-sm btn-dark">Search</button>
+                        <button type="submit" name="search" class="btn btn-sm btn-success">Search</button>
                     </div>
                 </form>
             </div>
@@ -75,7 +75,7 @@ if (isset($_POST["search"])) {
                     <form action="" method="post">
                         <div class="form-group d-flex">
                             <input type="text" placeholder="Add medicine type" name="category_name" id="" class="<?php echo (isset($error_msg["type"])) ? 'form-control border border-danger' : 'form-control'; ?>" value="<?php echo (!empty($data['type'])) ? $data["type"] : ''; ?>">
-                            <button type="submit" name="add" class="btn w-50 mx-3 btn-sm btn-dark">Add</button>
+                            <button type="submit" name="add" class="btn w-50 mx-3 btn-sm btn-success">Add</button>
                         </div>
                         <div>
                             <?php
@@ -87,7 +87,7 @@ if (isset($_POST["search"])) {
                     </form>
                 </div>
                 <div class="col-1 me">
-                    <a href="medicine.php" class="text-dark text-decoration-underline">Back</a>
+                    <a href="medicine.php" class="btn btn-sm btn-success mb-3">Back</a>
                 </div>
             </div>
             <hr class="hr-blurry">
