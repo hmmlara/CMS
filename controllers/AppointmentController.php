@@ -4,6 +4,11 @@ include_once __DIR__ . "/../models/Appointment.php";
 class AppointmentController extends Appointment
 {
 
+    // get all
+    public function getAll(){
+        return $this->getAllAppoints();
+    }
+
     //add appointment
     public function add($data)
     {
@@ -20,11 +25,5 @@ class AppointmentController extends Appointment
     public function update($id, $status_code)
     {
         return $this->updateStatus($id, $status_code);
-    }
-
-    // delete appoint
-    public function delete($id)
-    {
-        return $this->delAppoint($id);
     }
 }
