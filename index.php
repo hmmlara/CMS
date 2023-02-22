@@ -6,6 +6,7 @@ require_once './controllers/DoctorController.php';
 require_once './controllers/MedicineController.php';
 require_once './controllers/ReceptionController.php';
 require_once './controllers/ScheduleController.php';
+require_once './controllers/AppointmentController.php';
 
 $patientController = new PatientController();
 $total_patients = count($patientController->getPatients());
@@ -21,6 +22,9 @@ $total_receptionists = count($receptionController->getReceptionists());
 
 $scheduleController = new ScheduleController();
 $total_schedules = count($scheduleController->getAll());
+
+$appointmentController = new AppointmentController();
+$total_appointments = count($appointmentController->getAll());
 
 if(!$auth->isAuth()){
     header('location:login_form.php');
@@ -130,24 +134,59 @@ if($auth->hasRole() == 'doctor'){
         </div>
 
         <div class="col-xl-4 col-md-6 mb-4">
-            <div class="card bg-success text-white shadow-3">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="fs-6 text-center">
-                                Appointments
+            <a href="add_appointment">
+                <div class="card bg-success text-white shadow-3">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="fs-6 text-center">
+                                    Appointments
+                                </div>
+                                <div class="fs-6 font-weight-bold text-center"><?php echo $total_appointments; ?></div>
                             </div>
-                            <div class="fs-6 font-weight-bold text-center">100</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="far fa-calendar-check fa-2x text-gray-300"></i>
+                            <div class="col-auto">
+                                <i class="far fa-calendar-check fa-2x text-gray-300"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 </div>
+
+<script>
+const noti = () => {
+  if (!window.Notification) {
+    alert('Browser does not support notifications.')
+  } else {
+    // check if permission is already granted
+    if (Notification.permission === 'granted') {
+      // show notification here
+      const notify = new Notification('Hi there!', {
+        body: 'How are you doing?',
+      })
+    } else {
+      // request permission from the user
+      Notification.requestPermission()
+        .then(function (p) {
+          if (p === 'granted') {
+            // show notification here
+            const notify = new Notification('Hi there!', {
+              body: 'How are you doing?',
+              icon: 'https://bit.ly/2DYqRrh'
+            })
+          } else {
+            console.log('User has blocked notifications.')
+          }
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
+    }
+  }
+}
+</script>
 <?php
 include_once './layouts/footer.php';
 ?>
