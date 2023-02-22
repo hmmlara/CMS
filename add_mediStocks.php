@@ -35,6 +35,9 @@ if (isset($_POST["add"])) {
         //clear error messages if validated is true
         $error_msg = [];
 
+        // calculate price one medicine
+        $data['per_price'] = ($data['price'] / $data['qty']);
+
         $result = $stockController->addStock($data);
         // var_dump($result);
         if ($result) {

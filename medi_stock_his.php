@@ -42,7 +42,7 @@ for ($i = 1; $i <= count($mediStocks); $i++) {
         <div class="col-11 d-flex justify-content-between  mb-3">
         </div>
         <div class="col-1 me">
-           <a href="stock_medicine.php" class="text-dark text-decoration-underline">Back</a>
+           <a href="stock_medicine.php" class="btn btn-sm btn-success mb-3">Back</a>
         </div>
     </div>
 
@@ -77,8 +77,8 @@ for ($i = 1; $i <= count($mediStocks); $i++) {
                         echo "<td>".$stockMedicine["exp_date"]."</td>";
                         echo "<td>".$stockMedicine["enter_date"]."</td>";
                         echo "<td class='pe-3'>";
-                        echo "<a href='edit_medistock_his?id=".$stockMedicine["id"]."' class='btn btn-dark mx-2'><i class='fas fa-edit'></i></a>";
-                        echo "<a href='' class='btn btn-dark mx-2'><i class='fa fa-trash'></i></a>";
+                        echo "<a href='edit_medistock_his?id=".$stockMedicine["id"]."&medi_id=".$stockMedicine["medicine_id"]."' class='btn btn-success mx-2'><i class='fas fa-edit'></i></a>";
+                        echo "<a href='' class='btn btn-success mx-2'><i class='fa fa-trash'></i></a>";
                         echo "</td>";
                         echo"</tr>";
                     }

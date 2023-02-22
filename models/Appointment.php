@@ -6,11 +6,23 @@ class Appointment{
 
     private $pdo;
 
+    // get all appointments
+    protected function getAllAppoints(){
+        $this->pdo = Database::connect();
+
+        $query = 'select * from appointments';
+
+        $statement = $this->pdo->prepare($query);
+
+        if($statement->execute()){
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+    }
     //get Appointments
     protected function getAppoints($date){
         $this->pdo = Database::connect();
         
-        $query = 'select appointments.*,patients.pr_code as pr_name,user_infos.name as dr_name
+        $query = 'select appointments.*,patients.pr_code,patients.name as pr_name,patients.id as pr_id,user_infos.user_id as dr_id,user_infos.name as dr_name
                 from appointments join patients on patients.id = appointments.pr_id
                 join user_infos on user_infos.user_id = appointments.user_id
                 where appointments.appointment_date = :date';
@@ -45,7 +57,7 @@ class Appointment{
         return $statement->execute();
     }
     // update status
-    protected function updateStatus($id,$status_code){
+    public function updateStatus($id,$status_code){
         $this->pdo = Database::connect();
 
         $query = "update appointments set status = :status,updated_at = :updated_at where id = :id";
@@ -58,18 +70,4 @@ class Appointment{
 
         return $statement->execute();
     }
-
-    // delete appointment
-    protected function delAppoint($id){
-        $this->pdo = Database::connect();
-
-        $query = "delete from appointments where id = :id";
-
-        $statement = $this->pdo->prepare($query);
-
-        $statement->bindParam(":id",$id);
-
-        return $statement->execute();
-    }
-
 }

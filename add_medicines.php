@@ -62,7 +62,7 @@ if (isset($_POST["add"])) {
         <div class="col-11 d-flex justify-content-between  mb-3">
         </div>
         <div class="col-1 me">
-           <a href="medicine.php" class="text-dark text-decoration-underline">Back</a>
+           <a href="medicine.php" class="btn btn-sm btn-success mb-3">Back</a>
         </div>
     </div>
    <hr class="hr-blurry">
@@ -174,7 +174,7 @@ if (isset($_POST["add"])) {
                 <div class="col-11 d-flex justify-content-between  mb-3">
                 </div>
                 <div class="col-1 me">
-                    <button type="submit" class="btn btn-dark " name="add">Add</button>
+                    <button type="submit" class="btn btn-success mb-5 " name="add">Add</button>
                 </div>
             </div>
 

@@ -1,56 +1,64 @@
 <?php
 
-   include_once './layouts/header.php';
-   require_once './controllers/ScheduleController.php';
-   require_once './controllers/AppointmentController.php';
-   require_once './controllers/PatientController.php';
-   require_once './core/Request.php';
-   require_once './core/Validator.php';
-   require_once './core/libraray.php';
+include_once './layouts/header.php';
 
-   $scheduleController = new ScheduleController();
-   $schedules = $scheduleController->getAll();
+if (!$auth->isAuth()) {
+    header('location:login_form');
+}
 
-   $patientController = new PatientController();
-   $patients = $patientController->getPatients();
+require_once './controllers/ScheduleController.php';
+require_once './controllers/AppointmentController.php';
+require_once './controllers/PatientController.php';
+require_once './controllers/DoctorController.php';
+require_once './core/Request.php';
+require_once './core/Validator.php';
+require_once './core/libraray.php';
 
-   $appointmentController=new AppointmentController();
-   $appointments = $appointmentController->getAppointments(date('Y-m-d'));
+$scheduleController = new ScheduleController();
+$schedules = $scheduleController->getAll();
 
-   // check null of an array
-   if(count($appointments) > 0){
-        foreach(range(1,count($appointments)) as $key){
-            $appointments[$key - 1] += ["display_id" => $key];
-        }
-   }
+$patientController = new PatientController();
+$patients = $patientController->getPatients();
 
+$appointmentController = new AppointmentController();
+$appointments = $appointmentController->getAppointments(date('Y-m-d'));
 
-   $today_docs = array_values(array_filter($schedules,function($value){
-        return $value["shift_day"] == date('Y-m-d');
-   }));
+$doctorController = new DoctorController();
+$doctors = $doctorController->getDoctors();
 
-   $arr = [];
+// check null of an array
+if (count($appointments) > 0) {
+    foreach (range(1, count($appointments)) as $key) {
+        $appointments[$key - 1] += ["display_id" => $key];
+    }
+}
 
-   foreach($today_docs as $tod){
-        $data = [
-            'user_id' => $tod["user_id"],
-            'name' => $tod["name"],
-        ];
-        array_push($arr,$data);
-   }
+// filter for today's docs
 
-   // for remove duplicate data value
-   $result = array_unique($arr,SORT_REGULAR);
+//    $today_docs = array_values(array_filter($schedules,function($value){
+//         return $value["shift_day"] == date('Y-m-d');
+//    }));
 
+//    $arr = [];
 
-  $error_msg = [];
-  if(isset($_POST['add'])){
+//    foreach($today_docs as $tod){
+//         $data = [
+//             'user_id' => $tod["user_id"],
+//             'name' => $tod["name"],
+//         ];
+//         array_push($arr,$data);
+//    }
+
+// for remove duplicate data value
+//    $result = array_unique($arr,SORT_REGULAR);
+
+$error_msg = [];
+if (isset($_POST['add'])) {
 
     $request = new Request();
 
     $data = $request->getAll();
 
-    
     // get rid add array val
     unset($data["add"]);
 
@@ -63,61 +71,60 @@
         // clear error messages if validated is true
         $error_msg = [];
 
-        $data['appointment_date'] = date('Y-m-d');
+        $data['appointment_date'] = date_format(date_create($data['appointment_date']), 'Y-m-d');
+
         $result = $appointmentController->add($data);
 
-        if($result){
-            header('location:'.$_SERVER["PHP_SELF"]);
+        if ($result) {
+            header('location:' . $_SERVER["PHP_SELF"]);
         }
     }
-  }
- 
-  if(isset($_GET['id'])){
-        $result = $appointmentController->delete($_GET["id"]);
+}
 
-        if($result){
-            header('location:'.$_SERVER["PHP_SELF"]);
-        }
-  }
+if (isset($_GET['id'])) {
+    $result = $appointmentController->update($_GET["id"], 1);
 
-  if(isset($_POST['updateStatus'])){
+    if ($result) {
+        header('location:' . $_SERVER["PHP_SELF"]);
+    }
+}
+
+if (isset($_POST['updateStatus'])) {
     //  0 is start line, 1 is complete, status 2 is pending, 3 is cancel
-    $result = $appointmentController->update($_POST["appointment_id"],2);
+    $result = $appointmentController->update($_POST["appointment_id"], 2);
 
-    if($result){
+    if ($result) {
         header('location:add_appointment');
     }
 }
 
-if($auth->hasRole() == 'reception'){
+if ($auth->hasRole() == 'reception') {
     // filter for reception
-    $appointments = array_values(array_filter($appointments,function($value){
+    $appointments = array_values(array_filter($appointments, function ($value) {
         return $value["status"] == 0;
     }));
 }
 
-
-if($auth->hasRole() == 'doctor'){
+if ($auth->hasRole() == 'doctor') {
     // filter for reception
-    $appointments = array_values(array_filter($appointments,function($value){
-        if($value["status"] == 2 && $value["user_id"] == $_SESSION["user"]["id"])
+    $appointments = array_values(array_filter($appointments, function ($value) {
+        if ($value["status"] == 2 && $value["user_id"] == $_SESSION["user"]["id"]) {
             return $value;
-    }));
+        }
 
-    $_SESSION['patient_info'] = [
-      ''
-    ];
+    }));
 }
+
 ?>
 
 
 <div class="container-fluid">
-    <h3 class="mt-3 text-center">Today's date: <?php echo date_format(date_create(date('Y-m-d')),'d/m/Y');?></h3>
+    <h3 class="mt-3 text-center">Today's date: <?php echo date_format(date_create(date('Y-m-d')), 'd/m/Y'); ?></h3>
     <hr>
     <div class="row">
-        <?php 
-            if($auth->hasRole() != 'doctor'){
-        ?>
+        <?php
+if ($auth->hasRole() != 'doctor') {
+    ?>
         <div class="col-md-4">
 
             <div class="card">
@@ -131,23 +138,23 @@ if($auth->hasRole() == 'doctor'){
                                 <div class="form-group mb-3">
                                     <label for="" class="form-label">Patient Code</label>
                                     <select name="pr_id" id=""
-                                        class="<?php echo (isset($error_msg["pr_id"]))? 'border border-danger form-control': 'form-control'; ?>">
+                                        class="<?php echo (isset($error_msg["pr_id"])) ? 'border border-danger form-control' : 'form-control'; ?>">
                                         <option value="0">Choose Patient code</option>
-                                        <?php 
-                                            foreach($patients as $patient){
+                                        <?php
+                                            foreach ($patients as $patient) {
                                         ?>
-                                        <option value='<?php echo $patient["id"];?>'
-                                            <?php echo (isset($data["pr_id"]) && $data["pr_id"] == $patient["id"])? 'selected': ''; ?>>
-                                            <?php echo $patient["pr_code"];?></option>
+                                        <option value='<?php echo $patient["id"]; ?>'
+                                            <?php echo (isset($data["pr_id"]) && $data["pr_id"] == $patient["id"]) ? 'selected' : ''; ?>>
+                                            <?php echo $patient["pr_code"]; ?></option>
                                         <?php
                                             }
                                         ?>
 
                                     </select>
-                                    <?php 
-                                        if(isset($error_msg["pr_id"])){
-                                            echo "<small class='text-danger'>Select Patient</small>";
-                                        }
+                                    <?php
+                                        if (isset($error_msg["pr_id"])) {
+                                                echo "<small class='text-danger'>Select Patient</small>";
+                                            }
                                     ?>
                                 </div>
                             </div>
@@ -157,22 +164,22 @@ if($auth->hasRole() == 'doctor'){
 
                                     <!-- Doctor Select -->
                                     <select name="user_id" id="chooseDoc"
-                                        class="<?php echo (isset($error_msg["user_id"]))? 'border border-danger form-control': 'form-control'; ?>">
+                                        class="<?php echo (isset($error_msg["id"])) ? 'border border-danger form-control' : 'form-control'; ?>">
                                         <option value="0" hidden selected>Choose Doctor</option>
-                                        <?php 
-                                            foreach($result as $doctor){
+                                        <?php
+                                            foreach ($doctors as $doctor) {
                                         ?>
-                                        <option value='<?php echo $doctor["user_id"];?>'
-                                            <?php echo (!isset($data["user_id"]) && $data["user_id"] == $doctor["user_id"])? 'selected': ''; ?>>
-                                            <?php echo $doctor["name"];?></option>
+                                        <option value='<?php echo $doctor["id"]; ?>'
+                                            <?php echo (isset($data["user_id"]) && $data["user_id"] == $doctor["id"]) ? 'selected' : ''; ?>>
+                                            <?php echo $doctor["name"]; ?></option>
                                         <?php
                                             }
                                         ?>
                                     </select>
-                                    <?php 
-                                        if(isset($error_msg["user_id"])){
-                                            echo "<small class='text-danger'>Select Doctor</small>";
-                                        }
+                                    <?php
+                                        if (isset($error_msg["user_id"])) {
+                                                echo "<small class='text-danger'>Select Doctor</small>";
+                                            }
                                     ?>
 
                                 </div>
@@ -182,15 +189,16 @@ if($auth->hasRole() == 'doctor'){
                                     <div class="col-6">
                                         <div class="form-group mb-3">
                                             <label for="" class="form-label">Date</label>
-                                            <input type="date" name="start_day" id=""
-                                                class="<?php echo (isset($error_msg["sch_day"]))? 'border border-danger form-control' : 'form-control';?>"
+                                            <input type="text" name="appointment_date" id="sch_day"
+                                                placeholder="No time to show"
+                                                class="<?php echo (isset($error_msg["appointment_date"])) ? 'border border-danger form-control' : 'form-control'; ?>"
                                                 min="09:00"
-                                                value="<?php echo (isset($data["sch_day"]))? $data["sch_day"]: '';?>">
+                                                value="<?php echo (isset($data["appointment_date"])) ? $data["appointment_date"] : ''; ?>">
 
                                             <?php
-                                                if(isset($error_msg["sch_day"])){
-                                                    echo "<small class='text-danger'>Enter Date</small>";
-                                                }
+                                                if (isset($error_msg["appointment_date"])) {
+                                                        echo "<small class='text-danger'>Enter Date</small>";
+                                                    }
                                             ?>
                                         </div>
                                     </div>
@@ -198,7 +206,7 @@ if($auth->hasRole() == 'doctor'){
                                         <div class="form-group mb-3">
                                             <label for="" class="form-label">Time</label>
                                             <select name="appointment_time" id="dutyTime"
-                                                class="<?php echo (isset($error_msg["appointment_time"])) ? "border border-danger form-control" : 'form-control';   ?>">
+                                                class="<?php echo (isset($error_msg["appointment_time"])) ? "border border-danger form-control" : 'form-control'; ?>">
                                                 <option value="0" selected hidden>No time to show</option>
                                             </select>
 
@@ -216,10 +224,10 @@ if($auth->hasRole() == 'doctor'){
         </div>
 
         <?php
-            }
+        }
         ?>
 
-        <div class="<?php echo ($auth->hasRole() == 'doctor')? 'col-md-12' : 'col-md-8';?>">
+        <div class="<?php echo ($auth->hasRole() == 'doctor') ? 'col-md-12' : 'col-md-8'; ?>">
 
             <table class="table table-striped text-center">
                 <thead class="bg-dark text-white">
@@ -232,46 +240,54 @@ if($auth->hasRole() == 'doctor'){
                     </tr>
                 </thead>
                 <tbody>
-                    <?php 
-                        foreach($appointments as $app){
+                    <?php
+                        foreach ($appointments as $app) {
                     ?>
                     <tr>
-                        <td><?php echo $app["display_id"];?></td>
-                        <td><?php echo $app["pr_name"];?></td>
-                        <td><?php echo $app["dr_name"];?></td>
-                        <td><?php echo $app["appointment_time"];?></td>
+                        <td><?php echo $app["display_id"]; ?></td>
+                        <td><?php echo $app["pr_name"] . "(" . $app['pr_code'] . ")"; ?></td>
+                        <td><?php echo $app["dr_name"]; ?></td>
+                        <td><?php echo $app["appointment_time"]; ?></td>
                         <?php
-                            if($auth->hasRole() == 'reception' || $auth->hasRole() == 'admin'){
+                            if ($auth->hasRole() == 'reception' || $auth->hasRole() == 'admin') {
                         ?>
                         <td>
 
                             <form action="" method="post" class="d-inline">
-                                <input type="text" name="appointment_id" hidden value="<?php echo $app["id"];?>">
+                                <input type="text" name="appointment_id" hidden value="<?php echo $app["id"]; ?>">
                                 <button type='submit' name='updateStatus' class="btn btn-sm btn-info mx-2"><i
                                         class="fas fa-check"></i></button>
                             </form>
-                            <a href="<?php echo $_SERVER["PHP_SELF"]."?id=".$app["id"];?>"
+                            <a href="<?php echo $_SERVER["PHP_SELF"] . "?id=" . $app["id"]; ?>"
                                 class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a>
                         </td>
                         <?php
                             }
                         ?>
                         <!-- for doctor -->
-                        <?php 
-                            if($auth->hasRole() == 'doctor')
-                            {
+                        <?php
+                            if ($auth->hasRole() == 'doctor') {
                         ?>
                         <td>
-                            <a href="appointment_prescription" class="btn btn-sm btn-info">Start</a>
+                            <form action="appointment_prescription" method="post">
+                                <input type="text" name="pr_code" id="" value="<?php echo $app["pr_code"]; ?>" hidden>
+                                <input type="text" name="pr_id" id="" value="<?php echo $app['pr_id']; ?>" hidden>
+                                <input type="text" name="pr_name" id="" value="<?php echo $app['pr_name']; ?>" hidden>
+                                <input type="text" name="dr_id" id="" value="<?php echo $app['dr_id']; ?>" hidden>
+                                <input type="text" name="dr_name" id="" value="<?php echo $app['dr_name']; ?>" hidden>
+                                <input type="text" name="appoint_id" id="" value="<?php echo $app['id']; ?>" hidden>
+
+                                <button type="submit" class="btn btn-sm btn-info" name='start'>Start</button>
+                            </form>
                         </td>
                         <?php
-                            } 
+                            }
                         ?>
 
                         <!-- for doctor -->
                     </tr>
                     <?php
-                        }
+                    }
                     ?>
                 </tbody>
             </table>
@@ -280,10 +296,10 @@ if($auth->hasRole() == 'doctor'){
     </div>
 </div>
 <script>
-var duty_time = $.parseJSON('<?= json_encode($today_docs); ?>')
+var duty_time = $.parseJSON('<?=json_encode($schedules);?>')
 </script>
 
 
 <?php
-    include_once './layouts/footer.php';
+include_once './layouts/footer.php';
 ?>
