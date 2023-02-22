@@ -6,10 +6,6 @@
         header('location:login_form');
       }
       
-      if($auth->hasRole() == 'doctor'){
-        header('location:_403');
-      }
-      
 
     require_once './controllers/DoctorController.php';
     require_once './controllers/ScheduleController.php';
@@ -354,9 +350,6 @@
         ?>
     </div>
 
-    <?php 
-        if($auth->hasRole() != 'doctor'){ 
-    ?>
     <!-- Event Details Modal -->
     <div class="modal fade" id="event_details_modal">
         <div class="modal-dialog modal-dialog-centered">
@@ -380,20 +373,22 @@
                 </div>
                 <div class="modal-footer rounded-0">
                     <div class="text-end">
+                        <?php 
+                            if($auth->hasRole() != 'doctor'){ 
+                        ?>
                         <button type="button" class="btn btn-primary btn-sm rounded-0" id="edit"
                             data-id="">Edit</button>
                         <button type="button" class="btn btn-danger btn-sm rounded-0" id="delete"
                             data-id="">Delete</button>
+                        <?php 
+                            }
+                        ?>
                         <button type="button" class="btn btn-secondary btn-sm rounded-0" id="close">Close</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <?php 
-        }
-    ?>
 
 
     <script>
