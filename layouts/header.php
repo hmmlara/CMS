@@ -23,6 +23,8 @@ if (isset($_POST['logout'])) {
 
     <link rel="stylesheet" href="css/mdb.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/print.css">
     <!-- font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
         integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
@@ -32,13 +34,14 @@ if (isset($_POST['logout'])) {
     <script src="js/mdb.min.js"></script>
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src='js/index.global.js'></script>
+    <script src="js/jquery-ui.js"></script>
 </head>
 
-<body>
+<body onload="noti()">
     <?php
-// for active ui
-$page = explode('.php', $_SERVER["PHP_SELF"])[0];
-?>
+        // for active ui
+        $page = explode('.php', $_SERVER["PHP_SELF"])[0];
+    ?>
     <!-- navbar start -->
     <nav class="navbar navbar-expand-lg bg-light <?php echo (strpos($page, 'login') !== false) ? 'd-none' : ''; ?>">
         <div class="container-fluid">
@@ -77,7 +80,11 @@ $page = explode('.php', $_SERVER["PHP_SELF"])[0];
                     <li class="nav-item <?php echo (strpos($page, 'appoint') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="add_appointment">Appointments</a>
                     </li>
-
+                    
+                    <li class="nav-item <?php echo (strpos($page, 'invoice') !== false) ? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="invoice">Invoice</a>
+                    </li>
+                    
                     <?php
                     }
                     ?>
@@ -109,6 +116,9 @@ $page = explode('.php', $_SERVER["PHP_SELF"])[0];
                     </li>
                     <li class="nav-item <?php echo (strpos($page, 'schedule') !== false) ? 'active' : ''; ?>">
                         <a class="nav-link mx-2" href="schedule">Schedules</a>
+                    </li>
+                    <li class="nav-item <?php echo (strpos($page, 'invoice') !== false) ? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="invoice">Invoice</a>
                     </li>
                     <?php 
                         }
