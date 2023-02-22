@@ -49,6 +49,10 @@ class MedicineController extends Medicine
     public function getDetails($id){
         return $this->getMedicineDetails($id);
     }
+
+    public function getMediWarehouseId($medicine_id){
+        return $this->getMediStockWithId($medicine_id);
+    }
 }
 
 ?>

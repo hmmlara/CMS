@@ -24,6 +24,8 @@ if (isset($_GET["id"])) {
 
 $error_msg = [];
 
+echo $_GET["id"];
+
 if (isset($_POST["add"])) {
 
     // request for form data
@@ -43,10 +45,12 @@ if (isset($_POST["add"])) {
         // clear error messages if validated is true
         $error_msg = [];
 
+        $data['per_price'] = ($data['price'] / $data['qty']);
         $result = $editStockController->editMedicineStock($data);
 
         if ($result) {
-            header("location:medi_stock_his.php");
+            header("location:medi_stock_his.php?id=".$_GET['medi_id']);
+            
             
             // echo "<script>window.location.href='stock_his?id=".$_GET["id"]."'</script>";
         }
@@ -62,6 +66,7 @@ if (isset($_POST["add"])) {
     <form method="post" class="col-12">
         <h3 class="text-center">Medicine: <?php echo $stock["name"];?></h3>
         <input type="text" name="id" id="" value="<?php echo $_GET["id"];?>" hidden>
+        <input type="text" name="medi_id" id="" value="<?php echo $_GET["medi_id"]; ?>" hidden>
         <div class="form-group mb-3">
             <label for="" class="form-label">Quantity</label>
             <?php
