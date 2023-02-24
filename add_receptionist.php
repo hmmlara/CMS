@@ -32,6 +32,8 @@ if (isset($_POST["add"])) {
     $request = new Request();
 
     $data = $request->getAll();
+    $data['acc_name'] = 'asdjfasjdfkasdjfak';
+    $data['password'] = 'ajsdfjsadfkjsadkfjas';
 
    //image upload
    $filename=$_FILES['img']['name'];
@@ -94,45 +96,7 @@ if (isset($_POST["add"])) {
 
     <form action="" method="post" enctype="multipart/form-data">
         <input type="text" name="role_id" id="" value="3" hidden>
-        <div class="card mb-3">
-            <div class="card-title p-3">
-                <h3>Account</h3>
-            </div>
-
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-6">
-
-                        <div class="form-group">
-                            <label for="" class="form-label">Account Mail</label>
-                            <input type="text" name="acc_name" id=""
-                                class="<?php echo (isset($error_msg["acc_name"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
-                                value="<?php echo (!empty($data["acc_name"])) ? $data["acc_name"] : ''; ?>">
-                            <?php
-                            if(isset($error_msg["acc_name"])){
-                                echo "<small class='text-danger'>".$error_msg["acc_name"]."</small>";
-                            }
-                            ?>
-                        </div>
-
-                    </div>
-
-                    <div class="col-6">
-                        <div class="form-group">
-                            <label for="" class="form-label">Account Password</label>
-                            <input type="text" name="password" id=""
-                                class="<?php echo (isset($error_msg["password"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
-                                value="<?php echo (!empty($data["password"])) ? $data["password"] : ''; ?>">
-                            <?php
-                            if(isset($error_msg["password"])){
-                                echo "<small class='text-danger'>".$error_msg["password"]."</small>";
-                            }
-                            ?>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!--  -->
 
         <div class="card mb-3">
             <div class="card-title p-3">
