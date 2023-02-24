@@ -26,6 +26,7 @@ if(isset($_GET["id"])){
     $doctors=$doctorController->getDoctorDetail($_GET["id"]);
     // $user=$doctorController->add($_GET["id"]);
     // var_dump($doctors["specialities"]);
+    var_dump($doctors);
 }
 
 
@@ -92,6 +93,10 @@ if (isset($_POST["add"])) {
     } else {
         // clear error messages if validated is true
         $error_msg = [];
+
+        if($data['service_price'] == $doctors['service_price']){
+            unset($data['service_price']);
+        }
 
         $result = $doctorController->update($data);
         if ($result) {
@@ -313,6 +318,26 @@ if (isset($_POST["add"])) {
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group">
+                            <label for="" class="form-label">service_price</label>
+                            <?php
+                                 if(!isset($data['service_price'])){
+                                ?>
+                            <input type="text" name="service_price" class="form-control" value="<?php echo $doctors['service_price'] ; ?> ">
+                            <?php
+                                 }else{
+                                ?>
+                            <input type="text" name="nrc" id=" "
+                                class="<?php echo (isset($error_msg["service_price"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
+                                value="<?php echo (!empty($data["service_price"])) ? $data["service_price"] : ''; ?>">
+                            <?php
+                                 }
+                                if(isset($error_msg["service_price"])){
+                                    echo "<small class='text-danger'>".$error_msg["service_price"]."</small>";
+                                }
+                                ?>
+                        </div>
 
             </div>
         </div>
