@@ -37,7 +37,7 @@ if($auth->hasRole() == 'doctor'){
 
 <div class="container-fluid mt-2 p-4">
     <div class="row">
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <a href="all_doctors">
                 <div class="card bg-warning text-white shadow-3">
                     <div class="card-body">
@@ -56,7 +56,7 @@ if($auth->hasRole() == 'doctor'){
                 </div>
             </a>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <a href="medicine">
                 <div class="card bg-primary text-white shadow-3">
                     <div class="card-body">
@@ -75,7 +75,7 @@ if($auth->hasRole() == 'doctor'){
                 </div>
             </a>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <a href="all_receptionists">
                 <div class="card bg-info text-white shadow-3">
                     <div class="card-body">
@@ -94,7 +94,7 @@ if($auth->hasRole() == 'doctor'){
                 </div>
             </a>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <a href="all_patients">
                 <div class="card bg-danger text-white shadow-3">
                     <div class="card-body">
@@ -113,7 +113,7 @@ if($auth->hasRole() == 'doctor'){
                 </div>
             </a>
         </div>
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <a href="schedule">
                 <div class="card bg-secondary text-white shadow-3">
                     <div class="card-body">
@@ -133,7 +133,7 @@ if($auth->hasRole() == 'doctor'){
             </a>
         </div>
 
-        <div class="col-xl-4 col-md-6 mb-4">
+        <div class="col-xl-2 col-md-6 mb-4">
             <a href="add_appointment">
                 <div class="card bg-success text-white shadow-3">
                     <div class="card-body">
