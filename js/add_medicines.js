@@ -66,13 +66,15 @@ $(document).ready(function () {
                 success: function (response) {
                     if (!response != "fail") {
                         let db_qty = JSON.parse(response);
-                        if (qty > db_qty) {
+
+                        if (!isANumber(qty)) {
+                            alert('Quantity must be a number');
+                        }
+                        if (parseInt(qty) > parseInt(db_qty)) {
                             alert('Insufficient in stock.Please choose other medicine with similar effect');
-                            $(this).val();
                         }
                         if (qty == db_qty) {
                             alert('Please Enter Possible amount');
-                            $(this).val();
                         }
                     }
                     else {
@@ -83,3 +85,7 @@ $(document).ready(function () {
         }
     });
 });
+
+function isANumber(str){
+    return Number(str)? true : false;
+}
