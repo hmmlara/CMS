@@ -82,7 +82,7 @@ if (isset($_POST['logout'])) {
                     </li>
                     
                     <li class="nav-item <?php echo (strpos($page, 'invoice') !== false) ? 'active' : ''; ?>">
-                        <a class="nav-link mx-2" href="invoice">Invoice</a>
+                        <a class="nav-link mx-2" href="invoices">Invoice</a>
                     </li>
                     
                     <?php
@@ -118,7 +118,7 @@ if (isset($_POST['logout'])) {
                         <a class="nav-link mx-2" href="schedule">Schedules</a>
                     </li>
                     <li class="nav-item <?php echo (strpos($page, 'invoice') !== false) ? 'active' : ''; ?>">
-                        <a class="nav-link mx-2" href="invoice">Invoice</a>
+                        <a class="nav-link mx-2" href="invoices">Invoice</a>
                     </li>
                     <?php 
                         }
