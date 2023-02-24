@@ -41,6 +41,13 @@ class DoctorController extends Doctor{
             return false;
         }
     }
+
+    //get Patient and treatment
+    public function getPatients($id)
+    {
+        return $this->getPatientInfo($id);
+         
+    }
 }
 
 ?>
