@@ -60,7 +60,8 @@ class Doctor{
         //    echo $return;
             $user_id=$this->getUserId();
             $data['user_id'] = $user_id;
-            return $this->addDoctor($user_id,$data);
+            if( $this->addDoctor($user_id,$data))
+                return $this->addService($user_id,$data);
         }
     }
 
@@ -115,7 +116,10 @@ class Doctor{
     public function getDoctorDetail($id){
         $this->pdo = Database::connect();
 
-        $query = "select * from user_infos join users where user_infos.user_id= :id and users.id= :id";
+        $query = "select user_infos.*,max(service_prices.service_price) as service_price from user_infos join users
+        on user_infos.user_id= users.id
+        join service_prices on service_prices.user_id = users.id
+        where users.id = :id";
 
         $statement = $this->pdo->prepare($query);
 
@@ -166,14 +170,16 @@ class Doctor{
          $statement->bindParam(":updated_at",$data["updated_at"]);
         
         if($statement->execute()){
-
+             
             if($img != $data["img"] || empty($img)){
                 if(file_exists('uploads/'.$img)){
                     unlink("uploads/".$img);
                 }
             }
 
-            return true;
+           if(isset($data['service_price'])){
+                return $this->addService($data['user_id'],$data);
+           }
         }
          return false;
 
@@ -243,5 +249,45 @@ class Doctor{
 
         return $statement->fetch(PDO::FETCH_ASSOC)["img"];
     }
+
+    //get patient and treatment
+    public function getPatientInfo($id){
+        $this->pdo=Database::connect();
+
+        $sql = "SELECT treatments.id,patients.name as patient_name,patients.pr_code , treatments.treatment_date
+        FROM patients join treatments
+        ON patients.id = treatments.pr_id
+        join users on users.id = treatments.user_id
+        WHERE user_id= :user_id";
+
+        $statement=$this->pdo->prepare($sql);
+
+        $statement->bindParam(":user_id",$id);
+
+        $statement->execute();
+
+        $result=$statement->fetchAll(PDO::FETCH_ASSOC);
+        return $result;
+
+    }
+
+    // Add service price of doctor
+    private function addService($user_id,$data){
+        $this->pdo=Database::connect();
+
+        $sql="insert into service_prices (`user_id`,`service_price`,`created_at`,`updated_at`) values (:user_id,:service_price,:created_at,:updated_at)";
+
+        $statement = $this->pdo->prepare($sql);
+
+        $date_now = date('Y-m-d');
+        $statement->bindParam(':user_id',$user_id);
+        $statement->bindParam(":service_price",$data['service_price']);
+        $statement->bindParam(":created_at",$date_now);
+        $statement->bindParam(":updated_at",$date_now);
+
+        return $statement->execute();
+        
+    }
+
 }
 ?>
