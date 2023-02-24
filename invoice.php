@@ -15,20 +15,16 @@
     $treatmentController = new TreatmentController();
     $paymentController = new PaymentController();
     
-    $treatment = $treatmentController->get();
     $payments = $paymentController->getAll();
 
-    $check = false;
-    if($payments != null){
-        $check = in_array($treatment['id'],array_column($payments,'treatment_id'));
+    if(isset($_POST['create'])){
+        $treatment_id = $_POST['treatment_id'];
+        $treatment = $treatmentController->get($treatment_id);
     }
 ?>
-<?php
-    if(count($treatment) > 0){
-        if(!$check){
-?>
-<h3 id="treatment_id" hidden><?php echo $treatment['id'];?></h3>
-<div class="card">
+<h3 id="treatment_id" hidden class="mt-3"><?php echo $treatment_id;?></h3>
+<h3 id="service_id" hidden><?php echo $paymentController->getService($treatment['user_id']);?></h3>
+<div class="card mt-3">
     <div class="card-body">
         <div class="container mb-5 mt-3">
             <div class="container">
@@ -41,17 +37,25 @@
                 <div class="row mt-5" id="#fRow">
                     <div class="col-8 col-xl-8">
                         <ul class="list-unstyled">
-                            <li class="text-muted">Patient Name: <span
-                                    style="color:#5d9fc5;"><?php echo $treatment['pr_name'];?></span>
+                            <li class="text-muted">Patient Name:
+                                <span style="color:#5d9fc5;"><?php echo $treatment['pr_name'];?></span>
                             </li>
                             <li class="text-muted">Date:
                                 <?php echo date_format(date_create($treatment['treatment_date']),'d/M/Y');?></li>
+
+                            <li class="text-muted">
+                                <span class="fw-bold">Invoice Code:
+                                    <span
+                                        id="invoice_code"><?php echo "#CMS".date('Ymd',strtotime($treatment['treatment_date'])).$treatment_id;?></span>
+                                </span>
+                            </li>
                         </ul>
                     </div>
                     <div class="col-4 col-xl-4">
                         <ul class="list-unstyled">
                             <li class="text-muted"><span class="fw-bold">Doctor:
-                                </span><?php echo $treatment['dr_name'];?></li>
+                                </span><?php echo $treatment['dr_name'];?>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -100,7 +104,8 @@
                                 </span><?php echo $treatment['service_price'];?> MMK</li>
                         </ul>
                         <p class="text-black"><span class="text-black"> Total Amount: </span><span
-                                style="font-size: 20px;" id='total'><?php echo ($subtotal + $treatment['service_price']);?></span> MMK
+                                style="font-size: 20px;"
+                                id='total'><?php echo ($subtotal + $treatment['service_price']);?></span> MMK
                         </p>
                     </div>
                 </div>
@@ -126,10 +131,6 @@
         </div>
     </div>
 </div>
-<?php 
-        }
-    }
-?>
 <script src="js/print.js"></script>
 <?php 
     include_once './layouts/footer.php';

@@ -6,30 +6,65 @@ class Treatment
 {
     private $pdo;
 
+    protected function getAllTreatments(){
+        $this->pdo = Database::connect();
+
+        $query = 'SELECT treatments.id,treatments.treatment_date,patients.name as pr_name,patients.pr_code,
+        user_infos.user_id,user_infos.user_code as dr_code,user_infos.name as dr_name,
+        payments.invoice_code
+        FROM `treatments`
+        JOIN patients ON patients.id = treatments.pr_id
+        JOIN payments ON payments.treatment_id = treatments.id
+        JOIN user_infos ON user_infos.user_id = treatments.user_id';
+
+        $statement = $this->pdo->prepare($query);
+
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // get treatment details
+    protected function getDetails($treatment_id){
+        $this->pdo = Database::connect();
+
+        $query = 'select treatments.id,treatments.note,treatments.treatment_date FROM treatments where treatments.id = :treatment_id';
+
+        $statement = $this->pdo->prepare($query);
+
+        $statement->bindParam(":treatment_id",$treatment_id);
+
+        if($statement->execute()){
+
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+            $result['medicine_list'] = $this->getTreatMediLists($result['id']);
+
+            return $result;
+        }
+    }
     // get treatment
-    protected function getTreatment()
+    protected function getTreatment($treatment_id)
     {
         $this->pdo = Database::connect();
 
         $query = 'SELECT treatments.*,patients.name as pr_name,user_infos.name as dr_name,
-        service_prices.service_price
+        MAX(service_prices.service_price) as service_price
         FROM treatments
         JOIN patients ON patients.id = treatments.pr_id
         JOIN user_infos ON user_infos.user_id = treatments.user_id
         JOIN service_prices ON service_prices.user_id = user_infos.user_id 
-        WHERE treatment_date = :today';
+        WHERE treatments.id = :treatment_id';
 
         $statement = $this->pdo->prepare($query);
 
-        $today = date('Y-m-d');
-        $statement->bindParam(":today",$today);
+        $statement->bindParam(":treatment_id",$treatment_id);
 
         $statement->execute();
 
-        $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $result = $statement->fetchAll(PDO::FETCH_ASSOC)[0];
 
         if (count($result) > 0) {
-            $result = $result[count($result) - 1];
 
             $result['medi_lists'] = $this->getTreatMediLists($this->getTreatId());
         }
