@@ -149,7 +149,7 @@ if (isset($_POST["add"])) {
                     <div class="col-6">
                         <div class="form-group">
                             <label for="" class="form-label">Account Password</label>
-                            <input type="text" name="password" id=""
+                            <input type="password" name="password" id=""
                                 class="<?php echo (isset($error_msg["password"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
                                 value="<?php echo (!empty($data["password"])) ? $data["password"] : ''; ?>">
                             <?php
@@ -212,13 +212,14 @@ if (isset($_POST["add"])) {
                                 ?>
                         </div>
 
-                        
 
-                        
+
+
                         <div class="form-group mb-3">
                             <label for="" class="form-label">Phone</label>
-                            <input type="text" name="phone" id="" class="<?php echo (isset($error_msg["phone"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
-                             value="<?php echo (!empty($data["phone"])) ? $data["phone"] : ''; ?>">
+                            <input type="text" name="phone" id=""
+                                class="<?php echo (isset($error_msg["phone"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
+                                value="<?php echo (!empty($data["phone"])) ? $data["phone"] : ''; ?>">
                             <?php
                             if (isset($error_msg["phone"])) {
                                 echo "<small class='text-danger'>" . $error_msg["phone"] . "</small>";
@@ -310,9 +311,21 @@ if (isset($_POST["add"])) {
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="" class="form-label">Charges</label>
+                    <input type="text" name="service_price" id=" "
+                        class="<?php echo (isset($error_msg["service_price"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
+                        value="<?php echo (!empty($data["service_price"])) ? $data["service_price"] : ''; ?>">
+                                <?php
+                                if(isset($error_msg["service_price"])){
+                                    echo "<small class='text-danger'>".$error_msg["service_price"]."</small>";
+                                }
+                                ?>
+                </div>
+
             </div>
         </div>
-        <button type="submit" class="btn btn-success w-100" name="add">Add Doctor</button>
+        <button type="submit" class="btn btn-success w-100 mb-3" name="add">Add Doctor</button>
     </form>
 </div>
 
