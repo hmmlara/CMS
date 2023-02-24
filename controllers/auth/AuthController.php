@@ -83,7 +83,7 @@ class AuthController extends Auth
 
     public function logout()
     {
-        unset($_SESSION["user"]);
+        session_destroy();
         header('location:login_form');
     }
     public function hasRole()
@@ -107,6 +107,11 @@ class AuthController extends Auth
     {
         if (isset($_SESSION['user'])) {
             return $_SESSION['user']['acc_name'];
+        }
+    }
+    public function getId(){
+        if(isset($_SESSION['user'])){
+            return $_SESSION['user']['id'];
         }
     }
 
