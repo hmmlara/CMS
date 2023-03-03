@@ -7,4 +7,8 @@ class ReportController extends Report
     public function getMonthlyPatient($year){
         return $this->getMonthPati($year);
     }
+
+    public function getMonthlyPatientIncome($year){
+        return $this->getMonthIn($year);
+    }
 }
