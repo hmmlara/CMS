@@ -87,7 +87,7 @@
                                 <div class="form-group">
                                     <label for="" class="form-label">Medicine Name</label>
                                     <select name="medicine_id[]" class="form-control" id="medi_list">
-                                        <option value="0">Choose Medicine</option>
+                                        <option value="0" selected hidden>Choose Medicine</option>
                                     </select>
                                 </div>
                             </div>
