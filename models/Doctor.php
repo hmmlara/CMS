@@ -180,6 +180,7 @@ class Doctor{
            if(isset($data['service_price'])){
                 return $this->addService($data['user_id'],$data);
            }
+           return true;
         }
          return false;
 
