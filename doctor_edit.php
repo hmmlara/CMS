@@ -26,7 +26,7 @@ if(isset($_GET["id"])){
     $doctors=$doctorController->getDoctorDetail($_GET["id"]);
     // $user=$doctorController->add($_GET["id"]);
     // var_dump($doctors["specialities"]);
-    var_dump($doctors);
+    // var_dump($doctors);
 }
 
 
@@ -99,8 +99,9 @@ if (isset($_POST["add"])) {
         }
 
         $result = $doctorController->update($data);
+        var_dump($result);
         if ($result) {
-            header("location:all_doctors.php");
+            header("location:all_doctors");
         }
     }
 
