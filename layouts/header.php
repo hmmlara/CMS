@@ -35,6 +35,7 @@ if (isset($_POST['logout'])) {
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src='js/index.global.js'></script>
     <script src="js/jquery-ui.js"></script>
+    <script src="js/chart.umd.min.js"></script>
 </head>
 
 <body onload="noti()">
