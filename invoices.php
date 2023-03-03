@@ -1,60 +1,64 @@
-<?php 
-    include_once './layouts/header.php';
+<?php
+include_once './layouts/header.php';
 
-    require_once './controllers/PaymentController.php';
-    require_once './controllers/TreatmentController.php';
-    require_once './core/Paginator.php';
+require_once './controllers/PaymentController.php';
+require_once './controllers/TreatmentController.php';
+require_once './core/Paginator.php';
 
-    $paymentController = new PaymentController();
-    $treatmentController = new TreatmentController();
+$paymentController = new PaymentController();
+$treatmentController = new TreatmentController();
 
-    $uncheckPayments = $paymentController->getUncheckTreat();
-    $treatments = $treatmentController->getAll();
-    $treatment_id = $paymentController->getAll();
-    
-    if(count($treatments) > 0){
-        foreach(range(1,count($treatments)) as $index){
-            $treatments[$index - 1] += ['display_id' => $index];
-        }
+$uncheckPayments = $paymentController->getUncheckTreat();
+$treatments = $treatmentController->getAll();
+$treatment_id = $paymentController->getAll();
+
+if (count($treatments) > 0) {
+    foreach (range(1, count($treatments)) as $index) {
+        $treatments[$index - 1] += ['display_id' => $index];
+    }
+}
+
+// search appointments
+if (isset($_POST['search_invoice'])) {
+
+    unset($_SESSION['search_invoices']);
+
+    // condition for searching with code or name
+    if (!empty($_POST['corn']) && (empty($_POST['date_start']) && empty($_POST['date_end']))) {
+        $treatments = search_data($treatments, $_POST['corn']);
     }
 
-    // search appointments
-    if(isset($_POST['search_invoice'])){
-
-        unset($_SESSION['search_invoices']);
-
-        // condition for searching with code or name
-        if(!empty($_POST['corn']) && (empty($_POST['date_start']) && empty($_POST['date_end']))){
-            $treatments = search_data($treatments,$_POST['corn']);
-        }
-
-        // condition for searching with start date and end date
-        if(empty($_POST['corn']) && (!empty($_POST['date_start']) && !empty($_POST['date_end']))){
-            $start = $_POST['date_start'];
-            $end = $_POST['date_end'];
-            $treatments = search_date_between($treatments,$start,$end);
-        }
+    // condition for searching with start date and end date
+    if (empty($_POST['corn']) && (!empty($_POST['date_start']) && !empty($_POST['date_end']))) {
+        $start = $_POST['date_start'];
+        $end = $_POST['date_end'];
+        $treatments = search_date_between($treatments, $start, $end);
     }
-    // search appointments
-
-
     // overwrite $allAppoints array for pagination
-    if(!isset($_SESSION['search_invoices'])){
+    if (!isset($_SESSION['search_invoices'])) {
         $_SESSION['search_invoices'] = $treatments;
     }
 
-    if(isset($_SESSION['search_invoices'])){
+    if (isset($_SESSION['search_invoices'])) {
         $treatments = $_SESSION['search_invoices'];
     }
-    // overwrite $allAppoints array for pagination
-    // add pagination
+}
+// search appointments
+// reset
+if (isset($_POST['reset'])) {
+    header('location:' . $_SERVER['PHP_SELF']);
+}
+// reset
+
+// overwrite $allAppoints array for pagination
+// add pagination
 $pages = (isset($_GET["pages"])) ? (int) $_GET["pages"] : 1;
 
 $per_page = 5;
 $num_of_pages = ceil(count($treatments) / $per_page);
-$pagi_treats = Pagination::paginator($pages,$treatments, $per_page);
+$pagi_treats = Pagination::paginator($pages, $treatments, $per_page);
 
-
+// echo count($treatments);
 ?>
 <script>
 // localStorage.removeItem('lastTab');
@@ -101,7 +105,7 @@ $(document).ready(function() {
             </div>
             <div class="col-3 pt-2">
                 <button type="submit" class="btn btn-success mt-4" name="search_invoice">Search</button>
-                <button type="submit" class="btn btn-danger mt-4" name="search_invoice">Reset</button>
+                <button type="submit" class="btn btn-danger mt-4" name="reset">Reset</button>
             </div>
         </div>
     </form>
@@ -131,26 +135,26 @@ $(document).ready(function() {
                     <th>Function</th>
                 </thead>
                 <tbody>
-                    <?php 
-                        $count = 0;
-                        foreach($uncheckPayments as $uncheck){
-                    ?>
+                    <?php
+$count = 1;
+foreach ($uncheckPayments as $uncheck) {
+    ?>
                     <tr>
-                        <td><?php echo $count+1; ?></td>
-                        <td><?php echo $uncheck['pr_name']." (".$uncheck['pr_code'].")";?></td>
-                        <td><?php echo $uncheck['dr_name']."(".$uncheck['dr_code'].")";?></td>
-                        <td><?php echo date_format(date_create($uncheck['treatment_date']),'d/M/Y');?></td>
+                        <td><?php echo $count ++; ?></td>
+                        <td><?php echo $uncheck['pr_name'] . " (" . $uncheck['pr_code'] . ")"; ?></td>
+                        <td><?php echo $uncheck['dr_name'] . "(" . $uncheck['dr_code'] . ")"; ?></td>
+                        <td><?php echo date_format(date_create($uncheck['treatment_date']), 'd/M/Y'); ?></td>
                         <td>
                             <form action="invoice" method="post">
-                                <input type="text" name="treatment_id" id="" value="<?php echo $uncheck['id'];?>"
+                                <input type="text" name="treatment_id" id="" value="<?php echo $uncheck['id']; ?>"
                                     hidden>
                                 <button type="submit" class="btn btn-sm btn-primary" name="create">Create</button>
                             </form>
                         </td>
                     </tr>
-                    <?php 
-                        }
-                    ?>
+                    <?php
+}
+?>
                 </tbody>
             </table>
         </div>
@@ -165,41 +169,40 @@ $(document).ready(function() {
                     <th>Status</th>
                 </thead>
                 <tbody>
-                    <?php 
-                            foreach($pagi_treats as $treatment){
-                        ?>
+                    <?php
+foreach ($pagi_treats as $treatment) {
+    ?>
                     <tr>
-                        <td><?php echo $treatment['display_id'];?></td>
-                        <td><?php echo $treatment['invoice_code'];?></td>
-                        <td><?php echo $treatment['pr_name'];?></td>
-                        <td><?php echo $treatment['dr_name'];?></td>
-                        <td><?php echo date_format(date_create($treatment['treatment_date']),'d/M/Y');?></td>
+                        <td><?php echo $treatment['display_id']; ?></td>
+                        <td><?php echo $treatment['invoice_code']; ?></td>
+                        <td><?php echo $treatment['pr_name']; ?></td>
+                        <td><?php echo $treatment['dr_name']; ?></td>
+                        <td><?php echo date_format(date_create($treatment['treatment_date']), 'd/M/Y'); ?></td>
                         <td>
-                            <?php 
-                                        if(in_array($treatment['id'],array_column($treatment_id,'treatment_id'))){
-                                    ?>
+                            <?php
+if (in_array($treatment['id'], array_column($treatment_id, 'treatment_id'))) {
+        ?>
                             <span class="badge badge-primary p-2">Paid</span>
-                            <?php 
-                                        }
-                                        else{
-                                    ?>
+                            <?php
+} else {
+        ?>
                             <span class="badge badge-warning">Unpaid</span>
-                            <?php 
-                                        }
-                                    ?>
+                            <?php
+}
+    ?>
                         </td>
                     </tr>
-                    <?php 
-                            }
-                        ?>
+                    <?php
+}
+?>
                 </tbody>
             </table>
             <!-- pagination -->
-            <?php 
-        // pagi page
-        $server_page = $_SERVER["PHP_SELF"];
-        $pre_page = ($server_page . '?pages=' . ($pages - 1));
-    ?>
+            <?php
+// pagi page
+$server_page = $_SERVER["PHP_SELF"];
+$pre_page = ($server_page . '?pages=' . ($pages - 1));
+?>
             <nav aria-label="Page navigation example mx-auto">
                 <ul class="pagination justify-content-center">
                     <li class="page-item <?php echo ($pages == 1) ? 'disabled' : ''; ?>">
@@ -210,16 +213,16 @@ $(document).ready(function() {
                         </a>
                     </li>
                     <?php
-                $ellipse = false;
-                $ends = 1;
-                $middle = 2;
-                
-                for ($page = 1; $page <= $num_of_pages; $page++) {
-            ?>
+$ellipse = false;
+$ends = 1;
+$middle = 2;
+
+for ($page = 1; $page <= $num_of_pages; $page++) {
+    ?>
                     <?php
-                        if($page == $pages){
-                            $ellipse = true;
-                    ?>
+if ($page == $pages) {
+        $ellipse = true;
+        ?>
                     <li class='page-item active'>
                         <a class='page-link'
                             href='<?php echo ($page - 1 < 1) ? 'invoices' : $server_page . "?pages=" . $page; ?>'>
@@ -227,11 +230,10 @@ $(document).ready(function() {
                         </a>
                     </li>
                     <?php
-                        }
-                        else{
-                            // condition for ... in pagination
-                            if ($page <= $ends || ($pages && $page >= $pages - $middle && $page <= $pages + $middle) || $page > $num_of_pages - $ends) { 
-                    ?>
+} else {
+        // condition for ... in pagination
+        if ($page <= $ends || ($pages && $page >= $pages - $middle && $page <= $pages + $middle) || $page > $num_of_pages - $ends) {
+            ?>
                     <li class='page-item'>
                         <a class='page-link'
                             href='<?php echo ($page - 1 < 1) ? 'invoices' : $server_page . "?pages=" . $page; ?>'>
@@ -239,21 +241,20 @@ $(document).ready(function() {
                         </a>
                     </li>
                     <?php
-                                $ellipse = true;
-                            }
-                            elseif($ellipse){
-                    ?>
+$ellipse = true;
+        } elseif ($ellipse) {
+            ?>
                     <li class='page-item'>
                         <a class='page-link'>&hellip;</a>
                     </li>
                     <?php
-                                $ellipse = false;
-                            }
-                        }
-                    ?>
+$ellipse = false;
+        }
+    }
+    ?>
                     <?php
-                }
-            ?>
+}
+?>
                     <li class="page-item <?php echo ($pages == $num_of_pages) ? 'disabled' : ''; ?>">
                         <a class="page-link" href="<?php echo $server_page; ?>?pages=<?php echo $pages + 1; ?>"
                             aria-label="Next">
@@ -268,6 +269,6 @@ $(document).ready(function() {
     </div>
     <!-- Tabs content -->
 </div>
-<?php 
-    include_once './layouts/footer.php';
+<?php
+include_once './layouts/footer.php';
 ?>
