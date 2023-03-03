@@ -76,10 +76,11 @@ class Schedule
         $end = sprintf('%0d', explode('-', $data['end_day'])[2]);
         $month_start = sprintf('%0d', explode('-', $data['start_day'])[1]);
         $month_end = sprintf('%0d', explode('-', $data['end_day'])[1]);
+        $year = sprintf('%04d', explode('-', $data['start_day'])[0]);
 
-        echo '<pre>';
-        var_dump($start, $end);
-        echo '</pre>';
+        // echo '<pre>';
+        // var_dump($start, $end);
+        // echo '</pre>';
 
         $this->pdo = Database::connect();
 
@@ -90,25 +91,55 @@ class Schedule
 
         $result = false;
 
-        // format to 0x if num is less than 10
-        foreach (range($start, $end) as $index) {
-            $day_num = ($index >= 10) ? $index : "0$index";
-            $shift_day = explode('-', $data['start_day'])[0] . "-" . sprintf('%02d', explode('-', $data["start_day"])[1]) . "-" . $day_num;
+        if ($month_start == $month_end) {
+            // format to 0x if num is less than 10
+            foreach (range($start, $end) as $index) {
+                $day_num = ($index >= 10) ? $index : "0$index";
+                $shift_day = explode('-', $data['start_day'])[0] . "-" . sprintf('%02d', explode('-', $data["start_day"])[1]) . "-" . $day_num;
 
-            if (date('l', strtotime($shift_day)) == $data['w_day']) {
-                echo 'hello';
-                // bind param
-                $statement->bindParam(":user_id", $data['user_id']);
-                $statement->bindParam(":shift_day", $shift_day);
-                $statement->bindParam(":shift_start", $data['shift_start']);
-                $statement->bindParam(":shift_end", $data['shift_end']);
-                $statement->bindParam(":created_at", $data['created_at']);
-                $statement->bindParam(":updated_at", $data['updated_at']);
+                if (date('l', strtotime($shift_day)) == $data['w_day']) {
+                    echo 'hello';
+                    // bind param
+                    $statement->bindParam(":user_id", $data['user_id']);
+                    $statement->bindParam(":shift_day", $shift_day);
+                    $statement->bindParam(":shift_start", $data['shift_start']);
+                    $statement->bindParam(":shift_end", $data['shift_end']);
+                    $statement->bindParam(":created_at", $data['created_at']);
+                    $statement->bindParam(":updated_at", $data['updated_at']);
 
-                $result = $statement->execute();
+                    $result = $statement->execute();
+                }
+            }
+        } else {
+            foreach (range($month_start, $month_end) as $parent) {
+                $days = cal_days_in_month(CAL_GREGORIAN, $parent, $year);
+
+
+                // format to 0x if num is less than 10
+                foreach (range($start, $end) as $index) {
+                    $day_num = ($index >= 10) ? $index : "0$index";
+                    $month = $parent;
+                    $shift_day = $year . "-" . sprintf('%02d',$month). "-" . $day_num;
+                    if ($index > $days) {
+                        break;
+                    } else {
+                        // echo 'hello';
+                        if (date('l', strtotime($shift_day)) == $data['w_day']) {
+                            // bind param
+                            $statement->bindParam(":user_id", $data['user_id']);
+                            $statement->bindParam(":shift_day", $shift_day);
+                            $statement->bindParam(":shift_start", $data['shift_start']);
+                            $statement->bindParam(":shift_end", $data['shift_end']);
+                            $statement->bindParam(":created_at", $data['created_at']);
+                            $statement->bindParam(":updated_at", $data['updated_at']);
+
+                            $result = $statement->execute();
+                        }
+                    }
+                }
+                // echo $month;
             }
         }
-
         return $result;
 
     }

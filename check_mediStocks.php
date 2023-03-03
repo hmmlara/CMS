@@ -7,10 +7,10 @@ $medicineController = new MedicineController();
 if(isset($_POST['medicine_id'])){
     $result = $medicineController->getMediWarehouseId($_POST["medicine_id"]);
 
-    if(!empty($result)){
+    if($result != null){
         echo json_encode($result);
     }
     else{
-        echo 'fail';
+        echo json_encode($result);
     }
 }
