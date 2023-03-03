@@ -26,18 +26,18 @@ $total_schedules = count($scheduleController->getAll());
 $appointmentController = new AppointmentController();
 $total_appointments = count($appointmentController->getAll());
 
-if(!$auth->isAuth()){
+if (!$auth->isAuth()) {
     header('location:login_form.php');
 }
 
-if($auth->hasRole() == 'doctor'){
+if ($auth->hasRole() == 'doctor') {
     header('location:_403');
 }
 ?>
 
 <div class="container-fluid mt-2 p-4">
     <div class="row">
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <a href="all_doctors">
                 <div class="card bg-warning text-white shadow-3">
                     <div class="card-body">
@@ -56,7 +56,7 @@ if($auth->hasRole() == 'doctor'){
                 </div>
             </a>
         </div>
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <a href="medicine">
                 <div class="card bg-primary text-white shadow-3">
                     <div class="card-body">
@@ -75,7 +75,7 @@ if($auth->hasRole() == 'doctor'){
                 </div>
             </a>
         </div>
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <a href="all_receptionists">
                 <div class="card bg-info text-white shadow-3">
                     <div class="card-body">
@@ -84,7 +84,7 @@ if($auth->hasRole() == 'doctor'){
                                 <div class="fs-6 text-center">
                                     Receptionist
                                 </div>
-                                <div class="fs-6 font-weight-bold text-center"><?php echo $total_receptionists;?></div>
+                                <div class="fs-6 font-weight-bold text-center"><?php echo $total_receptionists; ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-laptop-medical fa-2x text-gray-300"></i>
@@ -94,7 +94,7 @@ if($auth->hasRole() == 'doctor'){
                 </div>
             </a>
         </div>
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <a href="all_patients">
                 <div class="card bg-danger text-white shadow-3">
                     <div class="card-body">
@@ -103,7 +103,7 @@ if($auth->hasRole() == 'doctor'){
                                 <div class="fs-6 text-center">
                                     Patients
                                 </div>
-                                <div class="fs-6 font-weight-bold text-center"><?php echo $total_patients;?></div>
+                                <div class="fs-6 font-weight-bold text-center"><?php echo $total_patients; ?></div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-users fa-2x text-gray-300"></i>
@@ -113,7 +113,7 @@ if($auth->hasRole() == 'doctor'){
                 </div>
             </a>
         </div>
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <a href="schedule">
                 <div class="card bg-secondary text-white shadow-3">
                     <div class="card-body">
@@ -133,7 +133,7 @@ if($auth->hasRole() == 'doctor'){
             </a>
         </div>
 
-        <div class="col-xl-2 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <a href="add_appointment">
                 <div class="card bg-success text-white shadow-3">
                     <div class="card-body">
@@ -153,9 +153,37 @@ if($auth->hasRole() == 'doctor'){
             </a>
         </div>
     </div>
+    <hr>
+    <!-- chart -->
+
+    <h3>Monthly Report</h3>
+
+    <div class="form-group w-25 mx-auto mb-3">
+        <label for="" class="form-label">Select Year </label>
+        <select name="" id="select_year" class="form-control">
+            <option value="" selected hidden>Choose Year</option>
+            <?php 
+                for($year = 2015; $year <= date('Y'); $year++){
+            ?>
+                <option value="<?php echo $year;?>" <?php echo (date('Y') == $year)? 'selected' : '';?>><?php echo $year;?></option>
+            <?php 
+                }
+            ?>
+        </select>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <canvas id="lineChart" style="width:100%;max-width:700px"></canvas>
+        </div>
+        <div class="col-6">
+            <canvas id="barChart" style="width: 100%;max-width:700px;"></canvas>
+        </div>
+    </div>
+    <!-- chart -->
 </div>
 
-<script>
+<script src="js/charts.js"></script>
+<!-- <script>
 const noti = () => {
   if (!window.Notification) {
     alert('Browser does not support notifications.')
@@ -186,7 +214,7 @@ const noti = () => {
     }
   }
 }
-</script>
+</script> -->
 <?php
 include_once './layouts/footer.php';
 ?>

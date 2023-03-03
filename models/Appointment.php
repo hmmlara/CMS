@@ -10,7 +10,7 @@ class Appointment{
     protected function getAllAppoints(){
         $this->pdo = Database::connect();
 
-        $query = 'select appointments.*,patients.name as pr_name,patients.pr_code as pr_code,user_infos.name as dr_name,user_infos.user_code as dr_code from appointments
+        $query = 'select appointments.*,patients.name as pr_name,patients.pr_code as pr_code,user_infos.name as dr_name,user_infos.user_id as dr_id,user_infos.user_code as dr_code from appointments
                     join user_infos on user_infos.user_id = appointments.user_id
                     join patients on patients.id = appointments.pr_id order by appointments.id asc';
 

@@ -1,8 +1,21 @@
+
+
+// add medicine list
+var cloned = $('#medicines .row').clone();
+
+$('#add_new').click(function () {
+    cloned.clone().appendTo('#medicines');
+});
+
 $(document).ready(function () {
 
+
+    $('#medicines').on('click', '#remove', function () {
+        $(this).closest('.row').remove();
+    });
     // get medicine list from php
 
-    $('#qty').prop('disabled', true);
+    // $('#qty').prop('disabled', true);
     let medicines_list = [];
 
     if (!!medicines) {
@@ -12,22 +25,11 @@ $(document).ready(function () {
     }
     // get medicine list from php
 
-    // add medicine list
-    var cloned = $('#medicines .row').clone();
-
-    $('#add_new').click(function () {
-        cloned.clone().appendTo('#medicines');
-    });
-
-    $('#medicines').on('click', '#remove', function () {
-        $(this).closest('.row').remove();
-    });
-
     // medi type choose
     $('#medicines').on('change', '#medi_type', function () {
         let type_id = $(this).val();
 
-        $('#qty').prop('disabled', false);
+        // $('#qty').prop('disabled', false);
         let lists = medicines_list.filter(medi => {
             return medi.type_id == type_id;
         });
@@ -37,7 +39,7 @@ $(document).ready(function () {
         medi_list.html('<option value="0" hidden selected>Choose Medicine</option>');
         // add medicine
         lists.map(medicine => {
-            medi_list.append(`<option value='${medicine.id}'>${medicine.name}</option>`);
+            medi_list.append(`<option value="${medicine.id}">${medicine.name}</option>`);
         });
     });
     $('#medicines').on('blur', '#qty', function () {
@@ -58,27 +60,32 @@ $(document).ready(function () {
     $('#medicines').on('keyup', '#qty', function () {
         let qty = $(this).val();
 
+        let medicine_id = $(this).closest('.row').find('#medi_list option:selected').val();
+        // console.log(medicine_id);
         if ($.trim(qty).length != 0) {
             $.ajax({
                 type: "post",
                 url: "check_mediStocks",
-                data: { medicine_id: $('#medi_list').val() },
+                data: { medicine_id: medicine_id },
                 success: function (response) {
                     if (!response != "fail") {
                         let db_qty = JSON.parse(response);
-
+                        // alert(db_qty)
+                        if(parseInt(db_qty) < 40){
+                            alert('Stock is low');
+                        }
                         if (!isANumber(qty)) {
                             alert('Quantity must be a number');
                         }
-                        if (parseInt(qty) > parseInt(db_qty)) {
-                            alert('Insufficient in stock.Please choose other medicine with similar effect');
+                        if (parseInt(qty) > parseInt(db_qty) ) {
+                            alert('Insufficient in amount');
                         }
                         if (qty == db_qty) {
                             alert('Please Enter Possible amount');
                         }
                     }
                     else {
-                        alert('fail to search');
+                        alert('This medicine is out of stock');
                     }
                 }
             });
@@ -86,6 +93,6 @@ $(document).ready(function () {
     });
 });
 
-function isANumber(str){
-    return Number(str)? true : false;
+function isANumber(str) {
+    return Number(str) ? true : false;
 }
