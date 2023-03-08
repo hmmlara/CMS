@@ -86,6 +86,9 @@ if (isset($_POST['logout'])) {
                         <a class="nav-link mx-2" href="invoices">Invoice</a>
                     </li>
                     
+                    <li class="nav-item <?php echo (strpos($page, 'report') !== false) ? 'active' : ''; ?>">
+                        <a class="nav-link mx-2" href="reports">Reports</a>
+                    </li>
                     <?php
                     }
                     ?>
