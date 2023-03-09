@@ -1,6 +1,14 @@
 <?php
 
-require_once __DIR__."./layouts/header.php";
+require_once "./layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor'){
+    header('location:_403');
+}
 
 require_once "./controllers/MedicineController.php";
 
@@ -38,17 +46,17 @@ if(isset($_POST["search"])){
             <div class="form-group d-flex float-right mb-3">
                 <span class="mt-2">Search:&nbsp;</span>
                 <input type="text" name="search_val" id="" class="form-control w-50 mx-3" placeholder="Enter Medi_name">
-                <button type="submit" name="search" class="btn btn-sm btn-dark">Search</button>
+                <button type="submit" name="search" class="btn btn-sm btn-success">Search</button>
             </div>
         </form>
     </div>
 
     <div class="row">
         <div class="col-11 d-flex justify-content-between  mb-3">
-            <a href="add_mediStocks.php" class="btn btn-sm btn-dark mx-2" id="add">Add Medicine Stocks</a>
+            <a href="add_mediStocks.php" class="btn btn-sm btn-success mx-2" id="add">Add Medicine Stocks</a>
         </div>
         <div class="col-1 me">
-           <a href="medicine.php" class="text-dark text-decoration-underline">Back</a>
+           <a href="medicine.php" class="btn btn-sm btn-success">Back</a>
         </div>
     </div>
 
@@ -76,7 +84,7 @@ if(isset($_POST["search"])){
                         echo "<td>".$stockMedicine['name']."</td>";
                         echo "<td>".$stockMedicine['total_qty']."</td>";
                         // echo "</td>";
-                        echo "<td><a class='btn btn-black' href='medi_stock_his.php?id=".$stockMedicine["medicine_id"]."'>
+                        echo "<td><a class='btn btn-success' href='medi_stock_his.php?id=".$stockMedicine["medicine_id"]."'>
                                 <i class='fa fa-history'></i>
                                 </a></td>";
                         echo"</tr>";

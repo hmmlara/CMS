@@ -1,6 +1,15 @@
 <?php
 
-require_once __DIR__."./layouts/header.php";
+require_once "./layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor' || $auth->hasRole() == 'reception'){
+    header('location:_403');
+}
+
 
 require_once "./controllers/MedicineController.php";
 
@@ -39,6 +48,13 @@ for ($i = 1; $i <= count($mediStocks); $i++) {
 
             <hr class="hr-blurry">
         </div>
+<<<<<<< HEAD
+=======
+        <div class="col-1 me">
+           <a href="stock_medicine.php" class="btn btn-sm btn-success mb-3">Back</a>
+        </div>
+    </div>
+>>>>>>> a3a833c822c9fd5ed3b3ba286d07d239aa6c782a
 
         <div class="col-12 d-flex">
 

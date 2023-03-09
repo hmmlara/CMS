@@ -1,6 +1,15 @@
 <?php
-ob_start();
+
 include_once "layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor' || $auth->hasRole() == 'reception'){
+    header('location:_403');
+}
+
 include_once "controllers/DoctorController.php";
 require_once "core/Request.php";
 require_once "core/Validator.php";
@@ -112,7 +121,7 @@ if (isset($_POST["add"])) {
     <div class="row">
         <div class="col-md-4">
             <h4>Add New Doctor</h4>
-            <a href="all_doctors.php" class="btn  btn-primary mb-3">Back</a>
+            <a href="all_doctors.php" class="btn btn-success mb-3"><i class="fas fa-arrow-left"></i></a>
         </div>
     </div>
 
@@ -140,7 +149,7 @@ if (isset($_POST["add"])) {
                     <div class="col-6">
                         <div class="form-group">
                             <label for="" class="form-label">Account Password</label>
-                            <input type="text" name="password" id=""
+                            <input type="password" name="password" id=""
                                 class="<?php echo (isset($error_msg["password"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
                                 value="<?php echo (!empty($data["password"])) ? $data["password"] : ''; ?>">
                             <?php
@@ -203,13 +212,14 @@ if (isset($_POST["add"])) {
                                 ?>
                         </div>
 
-                        
 
-                        
+
+
                         <div class="form-group mb-3">
                             <label for="" class="form-label">Phone</label>
-                            <input type="text" name="phone" id="" class="<?php echo (isset($error_msg["phone"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
-                             value="<?php echo (!empty($data["phone"])) ? $data["phone"] : ''; ?>">
+                            <input type="text" name="phone" id=""
+                                class="<?php echo (isset($error_msg["phone"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
+                                value="<?php echo (!empty($data["phone"])) ? $data["phone"] : ''; ?>">
                             <?php
                             if (isset($error_msg["phone"])) {
                                 echo "<small class='text-danger'>" . $error_msg["phone"] . "</small>";
@@ -301,9 +311,21 @@ if (isset($_POST["add"])) {
                     </div>
                 </div>
 
+                <div class="form-group">
+                    <label for="" class="form-label">Charges</label>
+                    <input type="text" name="service_price" id=" "
+                        class="<?php echo (isset($error_msg["service_price"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
+                        value="<?php echo (!empty($data["service_price"])) ? $data["service_price"] : ''; ?>">
+                                <?php
+                                if(isset($error_msg["service_price"])){
+                                    echo "<small class='text-danger'>".$error_msg["service_price"]."</small>";
+                                }
+                                ?>
+                </div>
+
             </div>
         </div>
-        <button type="submit" class="btn btn-success w-100" name="add">Add Doctor</button>
+        <button type="submit" class="btn btn-success w-100 mb-3" name="add">Add Doctor</button>
     </form>
 </div>
 

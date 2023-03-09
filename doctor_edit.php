@@ -1,6 +1,15 @@
 <?php
-ob_start();
+
 include_once "layouts/header.php";
+
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor' || $auth->hasRole() == 'reception'){
+    header('location:_403');
+}
+
 include_once "controllers/DoctorController.php";
 require_once "core/Request.php";
 require_once "core/Validator.php";
@@ -17,6 +26,7 @@ if(isset($_GET["id"])){
     $doctors=$doctorController->getDoctorDetail($_GET["id"]);
     // $user=$doctorController->add($_GET["id"]);
     // var_dump($doctors["specialities"]);
+    // var_dump($doctors);
 }
 
 
@@ -84,9 +94,14 @@ if (isset($_POST["add"])) {
         // clear error messages if validated is true
         $error_msg = [];
 
+        if($data['service_price'] == $doctors['service_price']){
+            unset($data['service_price']);
+        }
+
         $result = $doctorController->update($data);
+        var_dump($result);
         if ($result) {
-            header("location:all_doctors.php");
+            header("location:all_doctors");
         }
     }
 
@@ -97,7 +112,7 @@ if (isset($_POST["add"])) {
 
 <div class="container">
     <h5>Doctor Edit</h5>
-    <a href="all_doctors.php" class="btn btn-primary">Back</a>
+    <a href="all_doctors.php" class="btn btn-success"><i class="fas fa-arrow-left"></i></a>
 
     <form action="" method="post" enctype="multipart/form-data">
         <input type="text" name="user_id" value="<?php echo $_GET["id"]; ?>" hidden>
@@ -105,6 +120,7 @@ if (isset($_POST["add"])) {
             <div class="card-title p-3">
                 <h3>Doctor Information</h3>
             </div>
+            <img src="uploads/<?php echo $doctors["img"] ?>" alt="" srcset="" style="width: 300px;height: 300px;" id="img" class="img-thumbnail mx-auto">
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
@@ -141,13 +157,13 @@ if (isset($_POST["add"])) {
                             <?php
                                     if(!isset($data["img"])){
                                 ?>
-                            <input type="file" name="img" id="" class="form-control"
-                                value=" <?php echo $doctors['img'];  ?>">
+                            <input type="file" name="img" id="input" class="form-control"
+                                value=" <?php echo $doctors['img'];  ?>" onchange="file_changed()">
 
                             <?php
                                     }else{
                                 ?>
-                            <input type="file" name="img" id=" "
+                            <input type="file" name="img" id="input"
                                 class="<?php echo (isset($error_msg['img']))? "form-control border broder-danger" : "form-control";  ?>"
                                 value="<?php echo (!empty($data["img"]))? $data["img"] :' ';  ?>">
 
@@ -303,6 +319,26 @@ if (isset($_POST["add"])) {
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group">
+                            <label for="" class="form-label">service_price</label>
+                            <?php
+                                 if(!isset($data['service_price'])){
+                                ?>
+                            <input type="text" name="service_price" class="form-control" value="<?php echo $doctors['service_price'] ; ?> ">
+                            <?php
+                                 }else{
+                                ?>
+                            <input type="text" name="nrc" id=" "
+                                class="<?php echo (isset($error_msg["service_price"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
+                                value="<?php echo (!empty($data["service_price"])) ? $data["service_price"] : ''; ?>">
+                            <?php
+                                 }
+                                if(isset($error_msg["service_price"])){
+                                    echo "<small class='text-danger'>".$error_msg["service_price"]."</small>";
+                                }
+                                ?>
+                        </div>
 
             </div>
         </div>

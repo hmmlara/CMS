@@ -3,6 +3,10 @@
 * {
   font-family: 'Secular One', sans-serif;
 }
+::selection{
+  color: #fff;
+  background-color: #14A44D;
+}
 body{
   background: #f1f1f1;
 }
@@ -23,7 +27,7 @@ body{
 /* change the color and bg color of active or hovered links */
 .nav-item.active .nav-link {
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: #14A44D;
 }
 
 /* change border color of input */

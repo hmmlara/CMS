@@ -2,6 +2,15 @@
 
 require_once "./layouts/header.php";
 
+if(!$auth->isAuth()){
+    header('location:login_form');
+}
+
+if($auth->hasRole() == 'doctor'){
+    header('location:_403');
+}
+
+
 require_once "./controllers/MedicineController.php";
 
 require_once "./core/Validator.php";
@@ -39,16 +48,16 @@ if(isset($_POST["search"])){
                     <span class="mt-2">Search:&nbsp;</span>
                     <input type="text" name="search_val" id="" class="form-control w-50 mx-3"
                         placeholder="Enter Medi_Name">
-                    <button type="submit" name="search" class="btn btn-sm btn-dark">Search</button>
+                    <button type="submit" name="search" class="btn btn-sm btn-success">Search</button>
                 </div>
             </form>
         </div>
         <div class="row">
             <div class="col-12 d-flex justify-content-start  mb-3">
-                <a href="add_medicines.php" class="btn btn-sm btn-dark mx-2" id="add">Add Medicine</a>
-                <a href="medi_type.php" class="btn btn-sm btn-dark mx-2" id="add">Medi_type</a>
-                <a href="medi_category.php" class="btn btn-sm btn-dark mx-2" id="add">Category</a>
-                <a href="stock_medicine.php" class="btn btn-sm btn-dark mx-2" id="add">Medicine Stocks</a>
+                <a href="add_medicines.php" class="btn btn-sm btn-success mx-2" id="add">Add Medicine</a>
+                <a href="medi_type.php" class="btn btn-sm btn-success mx-2" id="add">Medi_type</a>
+                <a href="medi_category.php" class="btn btn-sm btn-success mx-2" id="add">Category</a>
+                <a href="stock_medicine.php" class="btn btn-sm btn-success mx-2" id="add">Medicine Stocks</a>
             </div>
         </div>
         <hr class="hr-blurry">
@@ -75,7 +84,7 @@ if(isset($_POST["search"])){
             echo "<td>" . $allmedicine['name'] . "</td>";
             echo "<td>" . $allmedicine['category_name'] . "</td>";
             echo "<td>" . $allmedicine['type'] . "</td>";
-            echo "<td><a href='medi_details?id=".$allmedicine['id']."' class='btn btn-primary'><i class='fas fa-info'></i></a></td>";
+            echo "<td><a href='medi_details?id=".$allmedicine['id']."' class='btn btn-info'><i class='fas fa-info'></i></a></td>";
             echo "</tr>";
         }
         ?>

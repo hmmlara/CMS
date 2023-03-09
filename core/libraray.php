@@ -20,10 +20,28 @@ function search_data($array, $search_val)
         foreach ($keys as $key) {
             if (strcasecmp($value[$key],$search_val) == 0) {
                 array_push($body, $value);
+                continue;
             }
         }
     }
     return $body;
+}
+// search date between
+function search_date_between($arr,$start,$end){
+    $result = [];
+
+    $start_date = date('Y-m-d',strtotime($start));
+    $end_date = date('Y-m-d', strtotime($end));
+    foreach($arr as $value){
+        $search_date = date('Y-m-d',strtotime(isset($value['appointment_date'])? $value['appointment_date'] : $value['treatment_date']));
+
+        if($search_date > $start_date && $search_date < $end_date){
+            array_push($result,$value);
+            continue;
+        }
+    }
+
+    return $result;
 }
 
 // change 12 hours format to 24 hours format
@@ -32,6 +50,13 @@ function format_24($time){
 
     return $datetime->format("H:i");
 
+}
+
+// change 24 hours to 12 hours format
+function format_12hrs($time){
+    $datetime = new DateTime($time);
+
+    return $datetime->format('h:i a');
 }
 
 // reduce function for only number associative array

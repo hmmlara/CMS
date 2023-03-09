@@ -1,0 +1,19 @@
+#fRow{
+    display: flex;
+}
+
+@page {
+    size: A4;
+}
+@media print{
+    .navbar{
+        display: none;
+    }
+    thead{
+        background: #84B0CA !important;
+        print-color-adjust: exact;
+    }
+    #check{
+        display: none;
+    }
+}

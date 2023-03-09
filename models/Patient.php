@@ -6,6 +6,25 @@ class Patient
 {
     private $pdo;
 
+    // get Treament data
+    public function getPatientTreat($pr_id)
+    {
+        $this->pdo = Database::connect();
+
+        $query = "SELECT treatments.id,treatments.treatment_date,user_infos.name,user_infos.user_code
+                    FROM treatments
+                    JOIN user_infos  ON treatments.user_id = user_infos.user_id
+                    WHERE treatments.pr_id = :pr_id";
+
+        $statement = $this->pdo->prepare($query);
+
+        $statement->bindParam(":pr_id",$pr_id);
+
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Get All Patients Data
     protected function getAllPatients()
     {
@@ -59,7 +78,7 @@ class Patient
         return (count($result) > 0) ? $result[count($result) - 1]["pr_code"] : '';
     }
 
-    // save patient 
+    // save patient
     protected function savePatient($data)
     {
 
@@ -92,7 +111,7 @@ class Patient
         // change updated_at data from $data
         $data["updated_at"] = date('Y-m-d');
 
-        $query = "UPDATE `patients` SET `pr_code`= :pr_code,`name`= :name,`phone`= :phone,`age`= :age,`weight`= :weight,`height`= :height,`gender`= :gender,`blood_type`= :blood_type,`created_at`= :created_at,`updated_at`= :updated_at 
+        $query = "UPDATE `patients` SET `pr_code`= :pr_code,`name`= :name,`phone`= :phone,`age`= :age,`weight`= :weight,`height`= :height,`gender`= :gender,`blood_type`= :blood_type,`created_at`= :created_at,`updated_at`= :updated_at
                     WHERE id = :id";
 
         $statment = $this->pdo->prepare($query);
@@ -105,7 +124,8 @@ class Patient
         return $statment->execute();
     }
 
-    protected function deletePatient($id){
+    protected function deletePatient($id)
+    {
 
         $this->pdo = Database::connect();
 
@@ -113,7 +133,7 @@ class Patient
 
         $statement = $this->pdo->prepare($query);
 
-        $statement->bindParam(":id",$id);
+        $statement->bindParam(":id", $id);
 
         return $statement->execute();
     }
