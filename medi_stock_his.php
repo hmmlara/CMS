@@ -20,6 +20,7 @@ require_once "./core/Request.php";
 $stockMedicineController = new MedicineController();
 
 $mediStocks = $stockMedicineController->getStockHistory($_GET["id"]);
+// var_dump($mediStocks);
 
 // add id for show
 for ($i = 1; $i <= count($mediStocks); $i++) {
@@ -68,13 +69,32 @@ for ($i = 1; $i <= count($mediStocks); $i++) {
             <?php
                     foreach($mediStocks as $stockMedicine)
                     {
+                        
                         echo "<tr>";
                         echo "<td>".$stockMedicine['dis_id']."</td>";
-                        echo "<td>".$stockMedicine['name']."</td>";
+                        echo "<td class='text-truncate'  style='max-width: 150px;'>".$stockMedicine['name']."</td>";
                         echo "<td>".$stockMedicine['qty']."</td>";
                         echo "<td>".$stockMedicine["price"]."</td>";
                         echo "<td>".$stockMedicine["man_date"]."</td>";
-                        echo "<td>".$stockMedicine["exp_date"]."</td>";
+
+                        //Expired date
+                        $expiry_date=strtotime($stockMedicine['exp_date']);
+                        
+                        $current_date=strtotime(date('Y-m-d'));
+
+                        $difference=($expiry_date - $current_date)/(60 * 60 *24 );
+
+                    
+                        if($difference<=30 && $difference>=0){
+                            echo "<td class='bg-warning'>".$stockMedicine["exp_date"]."</td>";
+                            
+
+                        }else{
+                            echo "<td>".$stockMedicine["exp_date"]."</td>";
+                        }
+
+                        
+                        
                         echo "<td>".$stockMedicine["enter_date"]."</td>";
                         echo "<td class='pe-3'>";
                         echo "<a href='edit_medistock_his?id=".$stockMedicine["id"]."&medi_id=".$stockMedicine["medicine_id"]."' class='btn btn-success mx-2'><i class='fas fa-edit'></i></a>";
