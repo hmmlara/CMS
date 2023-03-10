@@ -14,4 +14,8 @@ class ReportController extends Report
     public function getMonthlyPatientIncome($year){
         return $this->getMonthIn($year);
     }
+
+    public function getDailyMedicine($data){
+        return $this->getMediRp($data);
+    }
 }
