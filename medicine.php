@@ -19,10 +19,13 @@ require_once "./core/Request.php";
 
 require_once "./core/libraray.php";
 
+require_once "./core/Paginator.php";
+
 
 $medicineController = new MedicineController();
 
 $medicine = $medicineController->getMedicine();
+$medicineExpire=$medicineController->getMediExpired();
 
 // add id for show
 for ($i = 1; $i <= count($medicine); $i++) {
@@ -34,6 +37,13 @@ if(isset($_POST["search"])){
         $medicine = search_data($medicine,$_POST["search_val"]);
     }
 }
+
+// add pagination
+$pages = (isset($_GET["pages"])) ? (int) $_GET["pages"] : 1;
+
+$per_page = 7;
+$num_of_pages = ceil(count($medicine) / $per_page);
+$pagi_medicines = Pagination::paginator($pages, $medicine, $per_page);
 
 ?>
 
@@ -78,7 +88,7 @@ if(isset($_POST["search"])){
 
         <tbody>
             <?php
-        foreach ($medicine as $allmedicine) {
+        foreach ($pagi_medicines as $allmedicine) {
             echo "<tr>";
             echo "<td>" . $allmedicine['dis_id'] . "</td>";
             echo "<td>" . $allmedicine['name'] . "</td>";
@@ -90,6 +100,77 @@ if(isset($_POST["search"])){
         ?>
         </tbody>
     </table>
+
+    <!-- pagination -->
+        <?php 
+         // pagi page
+        $server_page = $_SERVER["PHP_SELF"];
+        $pre_page = ($server_page . '?pages=' . ($pages - 1));
+                        ?>
+        <nav aria-label="Page navigation example mx-auto">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?php echo ($pages == 1) ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="<?php echo ($pages == 2) ? 'medicine' : $pre_page; ?>"
+                        aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                <?php
+                                    $ellipse = false;
+                                    $ends = 1;
+                                    $middle = 2;
+                    
+                                    for ($page = 1; $page <= $num_of_pages; $page++) {
+                                ?>
+                <?php
+                                    if($page == $pages){
+                                        $ellipse = true;
+                                ?>
+                <li class='page-item active'>
+                    <a class='page-link'
+                        href='<?php echo ($page - 1 < 1) ? 'medicine' : $server_page . "?pages=" . $page; ?>'>
+                        <?php echo $page; ?>
+                    </a>
+                </li>
+                <?php
+                                    }
+                                    else{
+                                // condition for ... in pagination
+                                    if ($page <= $ends || ($pages && $page >= $pages - $middle && $page <= $pages + $middle) || $page > $num_of_pages - $ends) { 
+                                ?>
+                <li class='page-item'>
+                    <a class='page-link'
+                        href='<?php echo ($page - 1 < 1) ? 'medicine' : $server_page . "?pages=" . $page; ?>'>
+                        <?php echo $page; ?>
+                    </a>
+                </li>
+                <?php
+                                    $ellipse = true;
+                                }
+                                    elseif($ellipse){
+                                ?>
+                <li class='page-item'>
+                    <a class='page-link'>&hellip;</a>
+                </li>
+                <?php
+                                    $ellipse = false;
+                                    }
+                                }
+                                ?>
+                <?php
+                                }
+                                ?>
+                <li class="page-item <?php echo ($pages == $num_of_pages) ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="<?php echo $server_page; ?>?pages=<?php echo $pages + 1; ?>"
+                        aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    <!-- pagination -->
 </div>
 <?php
 

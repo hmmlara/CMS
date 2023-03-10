@@ -379,4 +379,27 @@ class Medicine
         }
         return false;
     }
+
+    //Medicine expired Date Alert
+    public function  MediExpired(){
+        $this->pdo= Database::connect();
+
+        $sql="SELECT medicines.id,medicines.name as medi_name,medi_stocks.enter_date, medi_stocks.exp_date
+        FROM medicines
+        JOIN medi_stocks
+        ON medi_stocks.medicine_id = medicines.id
+        WHERE exp_date <= DATE_ADD(CURDATE(), INTERVAL 30 DAY)
+        GROUP BY medicine_id";
+
+        $statement=$this->pdo->prepare($sql);
+
+        if($statement->execute())
+        {
+            return $statement->fetchAll(PDO::FETCH_ASSOC);
+        }
+        return false;
+
+        
+
+    }
 }

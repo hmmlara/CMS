@@ -24,6 +24,12 @@ $specialities=["","General Medicine","Nephrologists","Paediatrician","Physical M
 if(isset($_GET["id"])){
     $doctorInfos =$doctorController->getDetail($_GET['id']);
     $patients=$doctorController->getPatients($_GET['id']);
+    // add id for show
+
+for ($i = 1; $i <= count($patients); $i++) {
+    $patients[$i - 1] += ["display_id" => $i];
+}
+
     unset($_SESSION['dr_id']);
     unset($_SESSION['doctorInfos']);
     unset($_SESSION['patients']);
@@ -45,18 +51,27 @@ if(!isset($_SESSION['doctorInfos'])&& !isset($_SESSION['patients'])){
 
 // add pagination
 $pages = (isset($_GET["pages"])) ? (int) $_GET["pages"] : 1;
-$per_page = 3;
+$per_page = 5;
 $num_of_pages = ceil(count($_SESSION['patients']) / $per_page);
 $pagi_patients = Pagination::paginator($pages, $_SESSION['patients'], $per_page);
 
-
-// add id for show
-
-for ($i = 1; $i <= count($pagi_patients); $i++) {
-    $pagi_patients[$i - 1] += ["display_id" => $i];
-}    
-
 ?>
+
+<script>
+$(document).ready(function() {
+    // $('[href="rcp_today"]').tab('show');
+    $('a[data-mdb-toggle="tab"]').on('shown.bs.tab', function(e) {
+        localStorage.setItem('lastTab', $(this).attr('href'));
+        console.log(localStorage.getItem('lastTab'));
+    });
+    var lastTab = localStorage.getItem('lastTab');
+
+    if (lastTab) {
+        $('[href="' + lastTab + '"]').tab('show');
+    }
+    // localStorage.removeItem('lastTab');
+});
+</script>
 
 
 <div class="container mt-3">
@@ -87,7 +102,8 @@ for ($i = 1; $i <= count($pagi_patients); $i++) {
                             aria-expanded="false"><i class="fas fa-ellipsis-v fs-5"></i></button>
 
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="doctor_edit?id=<?php echo $_SESSION["dr_id"]; ?>">Edit</a></li>
+                            <li><a class="dropdown-item"
+                                    href="doctor_edit?id=<?php echo $_SESSION["dr_id"]; ?>">Edit</a></li>
                             <h6 id="del_id" hidden><?php echo $_SESSION['dr_id']; ?></h6>
                             <li><button class="dropdown-item" id="del_doc">Delete</button></li>
                         </ul>
@@ -128,7 +144,7 @@ for ($i = 1; $i <= count($pagi_patients); $i++) {
                             foreach ($pagi_patients as $patient) {
                         ?>
                             <tr>
-                                <td><?php echo $patient["display_id"]?></td>
+                                <td><?php echo $patient["display_id"]; ?></td>
                                 <td><?php echo $patient["pr_code"];?></td>
                                 <td><?php echo $patient["patient_name"]; ?></td>
                                 <td><?php echo $patient["treatment_date"]; ?></td>
@@ -219,7 +235,8 @@ for ($i = 1; $i <= count($pagi_patients); $i++) {
                                 <div class="row">
                                     <div class="col-md-6">
                                         <h5 class='mb-4'>Doctor
-                                            Code:&nbsp;&nbsp;<span><?php echo $_SESSION['doctorInfos']['user_code'] ?></span></h5>
+                                            Code:&nbsp;&nbsp;<span><?php echo $_SESSION['doctorInfos']['user_code'] ?></span>
+                                        </h5>
                                         <h5 class='mb-4'>Date of
                                             Birth:&nbsp;&nbsp;<span><?php echo $_SESSION['doctorInfos']['age'] ?></span>
                                         </h5>

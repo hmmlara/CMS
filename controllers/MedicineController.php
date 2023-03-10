@@ -53,6 +53,13 @@ class MedicineController extends Medicine
     public function getMediWarehouseId($medicine_id){
         return $this->getMediStockWithId($medicine_id);
     }
+
+    public function getMediExpired(){
+        $result= $this->MediExpired();
+        return $result;
+
+        
+    }
 }
 
 ?>
