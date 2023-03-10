@@ -27,7 +27,7 @@ body{
 /* change the color and bg color of active or hovered links */
 .nav-item.active .nav-link {
   color: #fff;
-  background-color: #14A44D;
+  background-color: slategrey;
 }
 
 /* change border color of input */
