@@ -59,6 +59,8 @@ if (isset($_POST['search_report'])) {
     }
     if (!isset($_SESSION['search_data'])) {
         $_SESSION['search_data'] = $reportDaily;
+        $_SESSION['treat_year'] = explode('-',$_POST['date_start'])[0];
+        $_SESSION['treat_month'] = date('F',strtotime(explode('-',$_POST['date_start'])[1]));
     }
     header('location:' . $_SERVER['PHP_SELF']);
 } else {
@@ -69,12 +71,41 @@ if (isset($_POST['search_report'])) {
 
 if (isset($_POST['reset'])) {
     unset($_SESSION['search_data']);
+    unset($_SESSION['treat_year']);
+    unset($_SESSION['treat_month']);
     header('location:' . $_SERVER["PHP_SELF"]);
 }
 
 if (isset($_SESSION['search_data'])) {
     $reportDaily = $_SESSION['search_data'];
 }
+
+
+// csv download
+// if(isset($_POST['treat_download_csv'])){
+//     // echo 'hello';
+//     if(isset($_SESSION['search_data'])){
+//         $fields = ['id','Daily','Treament quantity','Income List'];
+//         $filename = 'treatment_list('.$_SESSION['treat_year'].'-'.$_SESSION['treat_month'].').csv';
+//         $file = fopen('php://output','w');
+//         fputcsv($file,$fields,',');
+
+//         $data = $_SESSION['search_data'];
+//         for($i = 1; $i < count($data); $i++){
+//             $row_data = array($i,date('d/M/Y', strtotime($data[0]['treatment_date'],$data[0]['treatments'],$data['income'])));
+//             fputcsv($file,$row_data,',');
+//         }
+
+//         fclose($file);
+//         header('Content-Type: application/csv;charset=UTF-8'); 
+//         header('Content-Disposition: attachment; filename="'.$filename.'";');
+//         exit();
+//     }
+//     else{
+//         echo "<script>alert('Please search data')</script>";
+//     }
+// }
+
 // search appointments
 
 // medicine
@@ -101,6 +132,12 @@ if (isset($_POST['search_medi'])) {
         if (!isset($_SESSION['search_medis'])) {
             $_SESSION['search_medis'] = $medi_report;
         }
+        if(!isset($_SESSION['medi_year'])){
+            $_SESSION['medi_year'] = explode('-',$_POST['date_start'])[0];
+        }
+        if(!isset($_SESSION['medi_month'])){
+            $_SESSION['medi_month'] = date('F',strtotime(explode('-',$_POST['date_start'])[1]));
+        }
 
         $_SESSION['medi_name'] = array_values(array_filter($medicines, function ($value) {
             if ($value['id'] == $_POST['medicine_id']) {
@@ -113,6 +150,8 @@ if (isset($_POST['search_medi'])) {
 if (isset($_POST['reset_medi'])) {
     unset($_SESSION['medi_name']);
     unset($_SESSION['search_medis']);
+    unset($_SESSION['medi_year']);
+    unset($_SESSION['medi_month']);
 }
 
 if (isset($_SESSION['search_medis'])) {
@@ -202,7 +241,9 @@ $(document).ready(function() {
                             </div>
                         </div>
                     </div>
-
+                    <div class="col-6 d-flex align-items-end justify-content-end">
+                        <a href="down_treat" class="btn btn-success">Download CSV</a>
+                    </div>
                 </div>
             </form>
 
@@ -328,7 +369,7 @@ $ellipse = false;
 
             <form action="" method="post" class="mb-3 mt-3">
                 <div class="row">
-                    <div class="col-12">
+                    <div class="col-9">
                         <div class="row w-100">
                             <div class="col-2">
                                 <!-- Select Medicine type -->
@@ -415,6 +456,9 @@ foreach (range(1, 12) as $month) {
                                 <button type="submit" class="btn btn-danger mt-4" name="reset_medi">Reset</button>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-2 d-flex align-items-end justify-content-end">
+                        <a href="down_medi" class="btn btn-success">Download CSV</a>
                     </div>
 
                 </div>
@@ -520,10 +564,10 @@ $ellipse = false;
 
         </div>
 
-        </div>
-
     </div>
-    <!-- Tabs content -->
+
+</div>
+<!-- Tabs content -->
 </div>
 
 <script>
