@@ -13,7 +13,7 @@ if(isset($_SESSION['search_data'])){
 
     $data = $_SESSION['search_data'];
     for($i = 0; $i < count($data); $i++){
-        $row_data = array($i+1,$data[$i]['treatment_date'],date('d/M/Y', strtotime($data[$i]['treatment_date'])),$data[$i]['income']);
+        $row_data = array($i+1,date('d/M/Y', strtotime($data[$i]['treatment_date'])),$data[$i]['treatments'],$data[$i]['income']);
         fputcsv($file,$row_data,',');
     }
 
