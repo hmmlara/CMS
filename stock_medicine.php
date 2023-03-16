@@ -185,7 +185,7 @@ $pagi_mediStocks = Pagination::paginator($pages, $mediStocks, $per_page);
                     </li>
                 </ul>
             </nav>
-            <!-- pagination -->stock_medicine
+            <!-- pagination -->
     </div>
 
 <?php
