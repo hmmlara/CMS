@@ -19,6 +19,15 @@
 
     $schedules = $scheduleController->getAll();
 
+    if($auth->hasRole() == 'doctor'){
+        $schedules = array_values(array_filter($schedules,function($value){
+            $user_id = $_SESSION['user']['id'];
+            if($value['user_id'] == $user_id){
+                return $value;
+            }
+        }));
+    }
+
     $error_msg = [];
     if(isset($_POST["add"])){
 
@@ -135,7 +144,7 @@
                                     <div class="form-group mb-3">
                                         <label for="" class="form-label">Select Doctor</label>
                                         <select name="user_id" id=""
-                                            class="<?php echo ($error_msg["user_id"])? 'border border-danger form-control': 'form-control'; ?>">
+                                            class="<?php echo (isset($error_msg["user_id"]))? 'border border-danger form-control': 'form-control'; ?>">
                                             <option value="0" hidden selected>-----</option>
                                             <?php 
                                             foreach($doctors as $doctor){
@@ -156,7 +165,7 @@
                                     <div class="form-group mb-3">
                                         <label for="" class="form-label">Select Day</label>
                                         <select name="w_day" id=""
-                                            class="<?php echo ($error_msg["w_day"])? 'border border-danger form-control': 'form-control'; ?>">
+                                            class="<?php echo (isset($error_msg["w_day"]))? 'border border-danger form-control': 'form-control'; ?>">
                                             <option value="0" hidden selected>-----</option>
                                             <?php 
                                             
