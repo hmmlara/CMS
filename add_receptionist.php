@@ -40,7 +40,8 @@ if (isset($_POST["add"])) {
    $filesize=$_FILES['img']['size'];
    $tempfile=$_FILES['img']['tmp_name'];
    if($_FILES['img']['error']!=0){
-       echo "File is empty";
+    //    echo "File is empty";
+    $data['img'] = 'user-default.png';
    }else{
 
        $fileInfo=explode('.',$filename);
@@ -54,10 +55,10 @@ if (isset($_POST["add"])) {
               
                move_uploaded_file($tempfile,'uploads/'.$filename);
            }else{
-               echo "Your file is too big!";
+               echo "<script>alert('Your file is too big!');</script>";
            }
        }else{
-           echo "file type is not allowed";
+           echo "<script>alert('file type is not allowed');</script>";
        }
    }
    
@@ -90,7 +91,7 @@ if (isset($_POST["add"])) {
     <div class="row">
         <div class="col-md-4">
             <h4>Add New Reception</h4>
-            <a href="all_Receptionists.php" class="btn  btn-primary mb-3">Back</a>
+            <a href="all_receptionists.php" class="btn  btn-sm btn-success mb-3"><i class="fas fa-arrow-left"></i></a>
         </div>
     </div>
 
@@ -187,9 +188,17 @@ if (isset($_POST["add"])) {
 
                         <div class="form-group mb-3">
                             <label for="" class="form-label">Martial Status</label>
-                            <input type="text" name="status" id=" "
-                                class="<?php echo (isset($error_msg["status"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
-                                value="<?php echo (!empty($data["status"])) ? $data["status"] : ''; ?>">
+                            <select name="status" class="form-control <?php echo (isset($error_msg["status"])) ? 'border border-danger' : ''; ?>">
+                                <option value="" hidden selected>Choose Martial Status</option>
+                                <?php 
+                                    $m_status = ["Single", "Married", "Divorced", "Widowed" , "Separtated"];
+                                    foreach($m_status as $status){
+                                ?>
+                                <option value="<?php echo $status; ?>" <?php echo (isset($data["status"]) && $data["status"] == $status) ? 'selected' : ''; ?>><?php echo $status; ?></option>
+                                <?php 
+                                    }
+                                ?>
+                            </select>
                             <?php
                                 if(isset($error_msg["status"])){
                                     echo "<small class='text-danger'>".$error_msg["status"]."</small>";
@@ -225,7 +234,7 @@ if (isset($_POST["add"])) {
 
             </div>
         </div>
-        <button type="submit" class="btn btn-dark w-100" name="add">Add Receptionist</button>
+        <button type="submit" class="btn btn-success mb-3 w-100" name="add">Add Receptionist</button>
         
     </form>
 </div>
