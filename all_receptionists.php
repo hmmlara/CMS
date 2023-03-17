@@ -115,8 +115,22 @@ if(isset($_POST["search"])){
             <div class="<?php  echo (isset($_COOKIE["class"]))? $_COOKIE["class"] : 'col-3 mb-4'; ?>" id="cms_card">
                 <tr>
                     <td><?php echo $receptionist["display_id"]; ?></td>
-                    <td> <img class='img-fluid' src='uploads/<?php echo $receptionist['img']; ?>' alt=''
-                            style='height: 50px;'></td>
+                    <td>
+                        <?php 
+                            if($receptionist["img"] == 'user-default.png'){
+                        ?>
+                        <img class='img-fluid' src='assets/<?php echo $receptionist['img']; ?>' alt=''
+                            style='height: 30px;'>
+                        <?php 
+                            }
+                            else{
+                        ?>
+                        <img class='img-fluid' src='uploads/<?php echo $receptionist['img']; ?>' alt=''
+                            style='height: 50px;'>
+                        <?php 
+                            }
+                        ?>
+                    </td>
                     <td><?php echo $receptionist["user_code"];?></td>
                     <td><?php echo $receptionist["name"]; ?></td>
                     <td><?php echo $receptionist["phone"]; ?></td>
