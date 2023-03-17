@@ -163,8 +163,8 @@ if ($auth->hasRole() == 'doctor') {
             return $value['user_id'] == $GLOBALS['user_id'];
         }));
 
-        foreach (range(1, count($treatments)) as $index) {
-            $treatments[$index - 1] += ['display_id' => $index];
+        for($index = 0; $index <  count($treatments); $index++) {
+            $treatments[$index] += ['display_id' => $index];
         }
     }
 

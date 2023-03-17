@@ -263,9 +263,17 @@ if (isset($_POST["add"])) {
 
                         <div class="form-group mb-3">
                             <label for="" class="form-label">Martial Status</label>
-                            <input type="text" name="status" id=" "
-                                class="<?php echo (isset($error_msg["status"])) ? 'form-control  border border-danger' : 'form-control'; ?>"
-                                value="<?php echo (!empty($data["status"])) ? $data["status"] : ''; ?>">
+                            <select name="status" class="form-control <?php echo (isset($error_msg["status"])) ? 'border border-danger' : ''; ?>">
+                                <option value="" hidden selected>Choose Martial Status</option>
+                                <?php 
+                                    $m_status = ["Single", "Married", "Divorced", "Widowed" , "Separtated"];
+                                    foreach($m_status as $status){
+                                ?>
+                                <option value="<?php echo $status; ?>" <?php echo (isset($data["status"]) && $data["status"] == $status) ? 'selected' : ''; ?>><?php echo $status; ?></option>
+                                <?php 
+                                    }
+                                ?>
+                            </select>
                             <?php
                                 if(isset($error_msg["status"])){
                                     echo "<small class='text-danger'>".$error_msg["status"]."</small>";
