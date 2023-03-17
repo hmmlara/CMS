@@ -10,7 +10,7 @@ class Report
         $this->pdo = Database::connect();
 
         $query = "SELECT
-                    COUNT(*) AS count
+                    COUNT(*) AS count,MONTHNAME(treatment_date) as month
                     FROM treatments
                     WHERE YEAR(treatment_date) = :year
                     GROUP BY YEAR(treatment_date), MONTH(treatment_date)
@@ -22,7 +22,28 @@ class Report
 
         $statment->execute();
 
-        return $statment->fetchAll(PDO::FETCH_ASSOC);
+        // for monthly 
+        $db_result = $statment->fetchAll(PDO::FETCH_ASSOC);
+        $months = [];
+        $result = [];
+        foreach(range(1,12) as $data){
+            array_push($months,date('F',mktime(0,0,0,$data)));
+        }
+        
+        foreach($months as $month){
+            if(in_array($month,array_column($db_result,'month'))){
+                foreach($db_result as $data){
+                    if($data['month'] == $month){
+                        array_push($result,["count" => $data["count"]]);
+                    }
+                }
+            }
+            else{
+                array_push($result,["count" => 0]);
+            }
+        }
+
+        return $result;
     }
 
     protected function getDailyQty()
@@ -49,7 +70,7 @@ class Report
         $this->pdo = Database::connect();
 
         $query = "SELECT
-        COALESCE(SUM(payments.amount),0) AS count
+        COALESCE(SUM(payments.amount),0) AS count,MONTHNAME(treatment_date) as month
         FROM treatments
         JOIN payments ON payments.treatment_id = treatments.id
         WHERE YEAR(treatment_date) = :year
@@ -62,7 +83,27 @@ class Report
 
         $statment->execute();
 
-        return $statment->fetchAll(PDO::FETCH_ASSOC);
+        $db_result = $statment->fetchAll(PDO::FETCH_ASSOC);
+        $months = [];
+        $result = [];
+        foreach(range(1,12) as $data){
+            array_push($months,date('F',mktime(0,0,0,$data)));
+        }
+        
+        foreach($months as $month){
+            if(in_array($month,array_column($db_result,'month'))){
+                foreach($db_result as $data){
+                    if($data['month'] == $month){
+                        array_push($result,["count" => $data["count"]]);
+                    }
+                }
+            }
+            else{
+                array_push($result,["count" => 0]);
+            }
+        }
+
+        return $result;
     }
 
     public function getMediRp($data)
