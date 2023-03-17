@@ -35,7 +35,7 @@ if (isset($_POST["search"])) {
 // add pagination
 $pages = (isset($_GET["pages"])) ? (int) $_GET["pages"] : 1;
 
-$per_page = 4;
+$per_page = 10;
 $num_of_pages = ceil(count($patients) / $per_page);
 $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
 
@@ -75,6 +75,8 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
             <th>Patient Code</th>
             <th>Name</th>
             <th>Phone</th>
+            <th>Gender</th>
+            <th>Age</th>
             <th>Function</th>
         </thead>
         <tbody id="patient_table">
@@ -86,6 +88,8 @@ $pagi_patients = Pagination::paginator($pages, $patients, $per_page);
                 <td><?php echo $patient["pr_code"];?></td>
                 <td><?php echo $patient["name"]; ?></td>
                 <td><?php echo $patient["phone"]; ?></td>
+                <td><?php echo ($patient["gender"] == 1)? "Male" : "Female"; ?></td>
+                <td><?php echo $patient["age"]; ?></td>
                 <td id="<?php echo $patient["id"];?>">
                     <a href="patient_info?id=<?php echo $patient["id"]; ?>" class="btn btn-sm btn-primary"><i class="fas fa-info-circle"></i></a>
                     <a href="patient_edit?id=<?php echo $patient["id"]; ?>" class="btn btn-sm btn-info"><i
