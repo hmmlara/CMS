@@ -104,7 +104,7 @@ if (isset($_POST["add"])) {
 
 <div class="container mt-3">
     <h5>Reception Edit</h5>
-    <a href="all_receptionists.php" class="btn btn-success"><i class="fas fa-arrow-left"></i></a>
+    <a href="all_receptionists.php" class="btn btn-success btn-sm"><i class="fas fa-arrow-left"></i></a>
 
     <form action="" method="post" enctype="multipart/form-data">
         <input type="text" name="user_id" value="<?php echo $_GET["id"]; ?>" hidden>
@@ -112,7 +112,16 @@ if (isset($_POST["add"])) {
             <div class="card-title p-3">
                 <h3>Reception Information</h3>
             </div>
-            <img src="uploads/<?php echo $receptionists["img"] ?>" alt="" srcset="" style="width: 300px;height: 300px;" id="img" class="img-thumbnail mx-auto">
+            <?php 
+                if($receptionists['img']== 'user-default.png'){
+            ?>
+                <img src="assets/<?php echo $receptionists["img"] ?>" alt="" srcset="" style="width: 300px;height: 300px;" id="img" class="img-thumbnail mx-auto">
+            <?php 
+                }
+                else{
+            ?>
+                <img src="uploads/<?php echo $receptionists["img"] ?>" alt="" srcset="" style="width: 300px;height: 300px;" id="img" class="img-thumbnail mx-auto">
+            <?php }?>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-6">
