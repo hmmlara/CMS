@@ -31,7 +31,7 @@ class Patient
 
         $this->pdo = Database::connect();
 
-        $query = "select id,pr_code,name,phone from patients";
+        $query = "select id,pr_code,name,phone,gender,age from patients";
 
         $statment = $this->pdo->prepare($query);
 
