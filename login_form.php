@@ -2,7 +2,14 @@
     require_once './layouts/header.php';
     require_once './core/Request.php';
 
-
+    if($auth->isAuth()){
+        if($auth->hasRole() == 'admin'){
+            header('location:index');
+        }
+        else{
+            header('location:add_appointment');
+        }
+    }
     if(isset($_POST["login"])){
         $request = new Request();
 
